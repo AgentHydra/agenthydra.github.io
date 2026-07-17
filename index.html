@@ -159,7 +159,7 @@
     .icon-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; color: var(--muted); }
     .icon-btn svg { width: 16px; height: 16px; }
 
-    .app-body { display: flex; min-height: 0; flex: 1; }
+    .app-body { position: relative; display: flex; min-height: 0; flex: 1; }
     .list { width: 310px; flex: none; border-right: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; }
     .list-tools { display: flex; gap: 8px; padding: 11px; }
     .search { flex: 1; display: flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 9px; color: var(--faint); font-size: 12px; }
@@ -191,6 +191,97 @@
     .chip svg { width: 12px; height: 12px; }
     .composer .send { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; background: var(--app-accent); color: #1c0a1c; font-weight: 600; font-size: 12px; }
     .composer .send svg { width: 13px; height: 13px; }
+
+    /* ── Product-shot interactivity (tabs, panels, instances table) ── */
+    .app .tab, .app .btn-q, .app .icon-btn, .app .row, .app .send,
+    .app .mini, .app .kebab, .app .switch, .app .seg span, .app .close, .app .qrun { cursor: pointer; }
+    .app .tab:hover { color: var(--text); }
+    .app .row:hover { border-color: var(--border-2); background: rgba(255,255,255,0.03); }
+    .app .row.sel:hover { border-color: color-mix(in oklab, var(--app-accent) 45%, transparent); }
+    .app .icon-btn:hover, .app .pill:hover, .app .kebab:hover, .app .close:hover { color: var(--text); }
+    .app .btn-q.active, .app .icon-btn.active { background: var(--surface-2); color: var(--text); }
+
+    /* view switch */
+    .view { display: none; flex: 1; min-width: 0; min-height: 0; }
+    .view.on { display: flex; }
+    #view-instances { flex-direction: column; }
+
+    /* Instances table */
+    .inst-tools { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); flex: none; }
+    .inst-tools .h { font-weight: 640; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; }
+    .inst-tools .h svg { width: 15px; height: 15px; }
+    .inst-tools .h .n { color: var(--faint); font-weight: 400; }
+    .inst-tools .grow { margin-left: auto; }
+    .inst-scroll { overflow-x: auto; overflow-y: hidden; flex: 1; min-height: 0; }
+    .inst-scroll::-webkit-scrollbar { height: 8px; }
+    .inst-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 8px; }
+    .inst-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.14) transparent; }
+    .itable { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .itable th { text-align: left; font-weight: 500; color: var(--faint); padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 11px; white-space: nowrap; }
+    .itable th.r, .itable td.r { text-align: right; }
+    .itable td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: middle; white-space: nowrap; }
+    .itable tbody tr:last-child td { border-bottom: 0; }
+    .irow:hover td { background: rgba(255,255,255,0.025); }
+    .iname { color: var(--text); font-weight: 560; }
+    .idir { font-family: var(--mono); font-size: 10px; color: var(--faint); margin-top: 3px; }
+    .iglyph { position: relative; display: inline-flex; width: 18px; height: 18px; }
+    .iglyph svg { width: 18px; height: 18px; }
+    .iglyph.off { opacity: 0.4; }
+    .iglyph .live { position: absolute; right: -3px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 2px #0a0a0a; }
+    .abadge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; border: 1px solid var(--border-2); color: var(--muted); }
+    .abadge.max { color: #e0a24f; border-color: rgba(224,162,79,.4); background: rgba(224,162,79,.1); }
+    .abadge.pro { color: var(--app-accent); border-color: color-mix(in oklab, var(--app-accent) 40%, transparent); background: color-mix(in oklab, var(--app-accent) 12%, transparent); }
+    .ext { display: inline-block; margin-left: 6px; padding: 1px 7px; border: 1px solid var(--border); border-radius: 999px; font-size: 10px; color: var(--faint); vertical-align: middle; }
+    .usage b { color: var(--muted); font-weight: 600; font-size: 11px; }
+    .usage b + b { margin-left: 8px; }
+    .dim { color: var(--faint); }
+    .mono { font-family: var(--mono); }
+    .mini { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border: 1px solid var(--border-2); border-radius: 8px; color: var(--text); font-size: 11.5px; }
+    .mini svg { width: 12px; height: 12px; }
+    .kebab { width: 26px; height: 26px; display: inline-grid; place-items: center; border-radius: 7px; color: var(--muted); vertical-align: middle; }
+    .kebab svg { width: 15px; height: 15px; }
+
+    /* slide-in panels (settings / queue) + scrim */
+    .scrim { position: absolute; inset: 0; background: rgba(0,0,0,.5); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 20; }
+    .scrim.on { opacity: 1; pointer-events: auto; }
+    .panel { position: absolute; top: 0; right: 0; bottom: 0; width: 340px; max-width: 84%; background: #0e0e0f; border-left: 1px solid var(--border); transform: translateX(101%); transition: transform .28s cubic-bezier(.4,0,.2,1); z-index: 21; display: flex; flex-direction: column; box-shadow: -30px 0 60px -30px rgba(0,0,0,.8); }
+    .panel.on { transform: none; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--border); font-weight: 640; font-size: 13px; flex: none; }
+    .panel-head .close { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 7px; color: var(--muted); }
+    .panel-head .close svg { width: 15px; height: 15px; }
+    .panel-body { overflow-y: auto; overflow-x: hidden; flex: 1; }
+    .panel-body::-webkit-scrollbar { width: 8px; }
+    .panel-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 8px; }
+    .panel-body { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.14) transparent; }
+
+    /* settings rows */
+    .sgroup { padding: 4px 14px 8px; }
+    .gt { font-size: 10.5px; text-transform: uppercase; letter-spacing: .1em; color: var(--faint); margin: 14px 0 4px; }
+    .srow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .srow:last-child { border-bottom: 0; }
+    .srow .lbl { color: var(--text); font-size: 12.5px; }
+    .srow .desc { color: var(--faint); font-size: 11px; margin-top: 2px; max-width: 30ch; }
+    .switch { width: 34px; height: 20px; border-radius: 999px; background: rgba(255,255,255,.15); position: relative; flex: none; transition: background .18s; }
+    .switch.on { background: var(--app-accent); }
+    .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .18s; }
+    .switch.on::after { transform: translateX(14px); }
+    .seg { display: inline-flex; border: 1px solid var(--border-2); border-radius: 8px; overflow: hidden; }
+    .seg span { padding: 4px 10px; font-size: 11.5px; color: var(--muted); }
+    .seg span.on { background: var(--app-accent); color: #1c0a1c; }
+    .snum { padding: 4px 10px; border: 1px solid var(--border-2); border-radius: 8px; font-size: 11.5px; color: var(--text); min-width: 40px; text-align: center; font-family: var(--mono); }
+
+    /* queue items */
+    .q-tools { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); flex: none; }
+    .qitem { margin: 9px 12px; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; }
+    .qitem.running { border-color: color-mix(in oklab, var(--app-accent) 45%, transparent); background: color-mix(in oklab, var(--app-accent) 6%, transparent); }
+    .qitem .qt { color: var(--text); font-size: 12.5px; font-weight: 540; line-height: 1.35; }
+    .qitem .qmeta { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .qtag { font-size: 10.5px; color: var(--muted); padding: 2px 8px; border: 1px solid var(--border); border-radius: 999px; }
+    .qtag.run { color: var(--app-accent); border-color: color-mix(in oklab, var(--app-accent) 40%, transparent); display: inline-flex; align-items: center; gap: 5px; }
+    .qtag.run .rdot { width: 6px; height: 6px; border-radius: 50%; background: var(--app-accent); }
+    .qrun { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 7px; background: var(--app-accent); color: #1c0a1c; font-weight: 600; font-size: 11px; }
+    .qrun svg { width: 12px; height: 12px; }
+    .qrun.stop { background: transparent; color: var(--muted); border: 1px solid var(--border-2); }
 
     /* ── Sections ────────────────────────────────────────── */
     section { padding: 58px 0; }
@@ -273,6 +364,9 @@
       /* product shot: drop the list, show the conversation full width */
       .list { display: none; }
       .app { height: 500px; }
+      /* instances table: shed the dense numeric columns so it fits a phone */
+      .hide-narrow { display: none; }
+      .panel { width: 300px; }
     }
     @media (max-width: 560px) {
       .steps, .grid, .duo { grid-template-columns: 1fr; }
@@ -325,49 +419,53 @@
           <span class="tl tl-r"></span><span class="tl tl-y"></span><span class="tl tl-g"></span>
           <span class="frame-url">localhost:7787</span>
         </div>
-        <!-- A faithful, non-interactive replica of the Sessions view. -->
+        <!-- A faithful, lightly interactive replica: click the tabs, the Settings/Queue
+             buttons, and the session rows. Decorative (the real app is linked above),
+             so it stays aria-hidden; every control is a non-focusable div/span. -->
         <div class="app" aria-hidden="true">
           <div class="app-top">
             <img class="logo" src="icon.svg" alt="" />
             <span class="app-name">CC Manager UI</span>
             <div class="app-tabs">
-              <span class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>Sessions</span>
-              <span class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg>Instances</span>
+              <span class="tab on" data-tab="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>Sessions</span>
+              <span class="tab" data-tab="instances"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg>Instances</span>
             </div>
             <span class="spacer"></span>
-            <span class="pill"><span class="dot"></span> Scheduler off</span>
-            <span class="btn-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>Queue</span>
-            <span class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></span>
+            <span class="pill" data-panel="settings" data-jump="scheduler"><span class="dot"></span> Scheduler off</span>
+            <span class="btn-q" data-panel="queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>Queue</span>
+            <span class="icon-btn" data-panel="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></span>
           </div>
           <div class="app-body">
+            <!-- ── Sessions view ── -->
+            <div id="view-sessions" class="view on">
             <div class="list">
               <div class="list-tools">
                 <span class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search sessions…</span>
               </div>
               <div class="list-scroll">
-                <div class="row sel">
+                <div class="row sel" data-session="acme">
                   <span class="badge run">running</span>
                   <div class="title">Add retry + backoff to the API client</div>
                   <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>acme-checkout</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>feat/retry-backoff</span><span>47 · 5m ago</span></div>
                 </div>
-                <div class="row">
+                <div class="row" data-session="billing">
                   <div class="title">Fix the flaky auth test on CI</div>
                   <div class="meta"><span>billing-service</span><span>fix/flaky-auth</span><span>19m ago</span></div>
                 </div>
-                <div class="row">
+                <div class="row" data-session="dashboard">
                   <span class="badge queued">queued</span>
                   <div class="title">Migrate the settings page to the design system</div>
                   <div class="meta"><span>dashboard</span><span>redesign/settings</span><span>54m ago</span></div>
                 </div>
-                <div class="row">
+                <div class="row" data-session="payments">
                   <div class="title">Wire up the Stripe webhook handlers</div>
                   <div class="meta"><span>payments</span><span>feat/webhooks</span><span>2h ago</span></div>
                 </div>
-                <div class="row">
+                <div class="row" data-session="ingest">
                   <div class="title">Track down the memory leak in the worker pool</div>
                   <div class="meta"><span>ingest-worker</span><span>main</span><span>4h ago</span></div>
                 </div>
-                <div class="row">
+                <div class="row" data-session="data">
                   <div class="title">Refactor the CSV importer for streaming</div>
                   <div class="meta"><span>data-tools</span><span>refactor/csv</span><span>6h ago</span></div>
                 </div>
@@ -394,6 +492,127 @@
                   <span class="chip">Permissions</span>
                   <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>work@acme</span>
                   <span class="send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>Send</span>
+                </div>
+              </div>
+            </div>
+            </div>
+
+            <!-- ── Instances view ── -->
+            <div id="view-instances" class="view">
+              <div class="inst-tools">
+                <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg>Instances <span class="n">(4)</span></span>
+                <span class="grow"></span>
+                <span class="kebab" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span>
+                <span class="kebab" title="Refresh all usage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></span>
+                <span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Create instance</span>
+              </div>
+              <div class="inst-scroll">
+                <table class="itable">
+                  <thead>
+                    <tr>
+                      <th style="width:34px">●</th>
+                      <th>Name</th>
+                      <th>Instance account</th>
+                      <th class="hide-narrow">PID</th>
+                      <th class="hide-narrow">Uptime</th>
+                      <th class="hide-narrow">Memory</th>
+                      <th>Usage</th>
+                      <th class="r">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="irow">
+                      <td><span class="iglyph" style="color:#c15f3c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5 5-3"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg><span class="live"></span></span></td>
+                      <td><div class="iname">work</div><div class="idir">~/.claude-instances/work</div></td>
+                      <td><span class="abadge max">work@acme.com · Max</span></td>
+                      <td class="mono hide-narrow">21840</td>
+                      <td class="hide-narrow">2h 14m</td>
+                      <td class="hide-narrow">512 MB</td>
+                      <td><span class="usage"><b>5h 12%</b><b>wk 63%</b></span></td>
+                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>Focus</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
+                    </tr>
+                    <tr class="irow">
+                      <td><span class="iglyph" style="color:#5b9dd6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg><span class="live"></span></span></td>
+                      <td><div class="iname">personal</div><div class="idir">~/.claude-instances/personal</div></td>
+                      <td><span class="abadge pro">me@gmail.com · Pro</span></td>
+                      <td class="mono hide-narrow">8104</td>
+                      <td class="hide-narrow">41m</td>
+                      <td class="hide-narrow">388 MB</td>
+                      <td><span class="usage"><b>5h 4%</b><b>wk 21%</b></span></td>
+                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>Focus</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
+                    </tr>
+                    <tr class="irow">
+                      <td><span class="iglyph off" style="color:#a1a1aa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span></td>
+                      <td><div class="iname">client-a</div><div class="idir">~/.claude-instances/client-a</div></td>
+                      <td><span class="abadge max">client@studio.io · Max</span></td>
+                      <td class="mono hide-narrow dim">—</td>
+                      <td class="hide-narrow dim">—</td>
+                      <td class="hide-narrow dim">—</td>
+                      <td><span class="dim" style="font-size:11px">Not checked</span></td>
+                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 3 14 9-14 9V3z"/></svg>Open</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
+                    </tr>
+                    <tr class="irow">
+                      <td><span class="iglyph" style="color:#8f7ae0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg><span class="live"></span></span></td>
+                      <td><div class="iname">Claude Desktop<span class="ext">External</span></div><div class="idir">your regular install</div></td>
+                      <td><span class="abadge max">you@work.com · Max</span></td>
+                      <td class="mono hide-narrow">4620</td>
+                      <td class="hide-narrow">3h 02m</td>
+                      <td class="hide-narrow">690 MB</td>
+                      <td><span class="usage"><b>5h 30%</b><b>wk 71%</b></span></td>
+                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>Focus</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- overlay + slide-in panels -->
+            <div class="scrim"></div>
+
+            <div class="panel" id="panel-settings">
+              <div class="panel-head"><span>Settings</span><span class="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></div>
+              <div class="panel-body">
+                <div class="sgroup">
+                  <div class="gt">Appearance</div>
+                  <div class="srow"><span class="lbl">Theme</span><span class="seg"><span>Light</span><span class="on">Dark</span><span>System</span></span></div>
+                  <div class="srow"><span class="lbl">Show tooltips</span><span class="switch on"></span></div>
+                  <div class="gt">Instances</div>
+                  <div class="srow"><span class="lbl">Show desktop instances</span><span class="switch on"></span></div>
+                  <div class="srow"><span class="lbl">Show CLI instances</span><span class="switch on"></span></div>
+                  <div class="srow"><span><span class="lbl">Auto-refresh usage</span><div class="desc">Keep quota numbers current in the background.</div></span><span class="switch on"></span></div>
+                  <div class="gt" id="grp-scheduler">Scheduler</div>
+                  <div class="srow"><span><span class="lbl">Enabled</span><div class="desc">Work through the queue automatically.</div></span><span class="switch"></span></div>
+                  <div class="srow"><span class="lbl">Max concurrent</span><span class="snum">3</span></div>
+                  <div class="srow"><span class="lbl">Spacing (s)</span><span class="snum">20</span></div>
+                  <div class="gt">Auto-resume monitor</div>
+                  <div class="srow"><span><span class="lbl">Enabled</span><div class="desc">Resume sessions after a 5-hour limit resets.</div></span><span class="switch"></span></div>
+                  <div class="gt">Updates</div>
+                  <div class="srow"><span class="lbl">Current version</span><span class="sver mono" style="color:var(--muted);font-size:12px">0.6.0 · up to date</span></div>
+                  <div class="gt">Cloud sync</div>
+                  <div class="srow"><span class="lbl">Sync settings with Connections</span><span class="mini">Connect</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel" id="panel-queue">
+              <div class="panel-head"><span>Run queue</span><span class="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></div>
+              <div class="q-tools">
+                <span class="pill"><span class="dot"></span> Scheduler off</span>
+                <span class="grow" style="margin-left:auto"></span>
+                <span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>New run</span>
+              </div>
+              <div class="panel-body">
+                <div class="qitem running">
+                  <div class="qt">Add retry + backoff to the API client</div>
+                  <div class="qmeta"><span class="qtag">acme-checkout</span><span class="qtag">Opus 4.8</span><span class="qtag">high</span><span class="qtag run"><span class="rdot"></span>running</span><span class="qrun stop">Stop</span></div>
+                </div>
+                <div class="qitem">
+                  <div class="qt">Migrate the settings page to the design system</div>
+                  <div class="qmeta"><span class="qtag">dashboard</span><span class="qtag">Opus 4.8</span><span class="qtag">high</span><span class="qtag">queued</span><span class="qrun"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m6 3 14 9-14 9V3z"/></svg>Run</span></div>
+                </div>
+                <div class="qitem">
+                  <div class="qt">Fix the flaky auth test on CI</div>
+                  <div class="qmeta"><span class="qtag">billing-service</span><span class="qtag">Sonnet 5</span><span class="qtag">medium</span><span class="qtag">queued</span><span class="qrun"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m6 3 14 9-14 9V3z"/></svg>Run</span></div>
                 </div>
               </div>
             </div>
@@ -515,5 +734,134 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    // Makes the product-shot replica lightly interactive: switch tabs, open the
+    // Settings / Queue panels, and click session rows to swap the transcript.
+    // Vanilla, self-contained, no dependencies.
+    (function () {
+      const app = document.querySelector('.app');
+      if (!app) return;
+      const $ = (s, r = app) => r.querySelector(s);
+      const $$ = (s, r = app) => Array.from(r.querySelectorAll(s));
+
+      // Canned transcripts for each session row.
+      const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const SESSIONS = {
+        acme: {
+          title: 'Add retry + backoff to the API client', id: '9e3779b1',
+          cwd: 'C:\\work\\acme-checkout', turns: '6 turns shown',
+          chat: [
+            ['u', 'Our API client hammers the server and gives up on the first 429. Add retry with exponential backoff, and treat 429 vs 529 differently.'],
+            ['a', 'Good call — those are two different failures. A 429 is your own rate cap and comes with a Retry-After header we should honour exactly. A 529 is the server being overloaded; that one we retry on our own schedule with backoff + jitter.'],
+            ['u', 'Cap it at 5 attempts and make the jitter full, not equal.'],
+            ['a', 'Done. Base delay 500ms, doubling each attempt, full jitter over [0, delay], hard cap of 5 tries. On a 429 I sleep for exactly Retry-After when present. Everything else fails fast.'],
+            ['u', 'Nice. Add a test that a 529 then a 200 resolves, and that a 400 never retries.'],
+            ['a', 'Added three: 529→200 resolves after one retry, a 429 waits for Retry-After, and a 400 throws with zero retries. All green.'],
+          ],
+        },
+        billing: {
+          title: 'Fix the flaky auth test on CI', id: '3c6ef363',
+          cwd: 'C:\\work\\billing-service', turns: '4 turns shown',
+          chat: [
+            ['u', 'The auth test passes locally but fails about 1 in 5 on CI. Can you figure out why?'],
+            ['a', "It's a timing race: the test logs in and immediately asserts on the session cookie, but the cookie is set on the next tick. CI is busier, so the assert sometimes runs first. I'll wait for the redirect instead of a fixed sleep."],
+            ['u', 'We had a setTimeout(50) in there. Kill it.'],
+            ['a', 'Gone. Replaced the sleep with a wait-for-selector on the logged-in avatar, then ran it 50× in a loop locally — green every time. Pushed.'],
+          ],
+        },
+        dashboard: {
+          title: 'Migrate the settings page to the design system', id: 'daa66d14',
+          cwd: 'C:\\work\\dashboard', turns: '4 turns shown',
+          chat: [
+            ['u', 'Move the settings page off the old hand-rolled inputs onto our design-system components.'],
+            ['a', 'Swapped the toggles, selects and text fields for the DS equivalents and dropped ~180 lines of bespoke CSS. Two things need a call: the old page had a custom color picker the DS does not ship, and the danger buttons used a red that is not a DS token.'],
+            ['u', 'Use the closest DS token for the red, and keep the color picker as a one-off for now.'],
+            ['a', 'Done. Danger buttons use `destructive`, and the color picker is isolated in its own component with a TODO so it is easy to find later. Screens match the mockups.'],
+          ],
+        },
+        payments: {
+          title: 'Wire up the Stripe webhook handlers', id: '78dde6c6',
+          cwd: 'C:\\work\\payments', turns: '4 turns shown',
+          chat: [
+            ['u', 'Add handlers for checkout.session.completed and invoice.payment_failed, and verify the signature.'],
+            ['a', 'Both in, behind a signature check using the webhook secret. `completed` provisions the account; `payment_failed` flips it to past_due and queues a dunning email. Unknown event types get a 200 so Stripe stops retrying them.'],
+            ['u', "Make sure we're idempotent — Stripe can deliver the same event twice."],
+            ['a', 'Added an events table keyed on the Stripe event id; a duplicate is a no-op that still returns 200. Verified with a replayed event.'],
+          ],
+        },
+        ingest: {
+          title: 'Track down the memory leak in the worker pool', id: '17156078',
+          cwd: 'C:\\work\\ingest-worker', turns: '4 turns shown',
+          chat: [
+            ['u', "The worker pool's memory climbs all day until it OOMs overnight. Find the leak."],
+            ['a', 'Heap snapshots point at the retry queue: each failed job is re-enqueued with a fresh closure that captures the whole payload, and a timer that never clears keeps the old closures alive. So every retry pins another copy of the payload.'],
+            ['u', 'Nasty. Fix it and add a guard so it cannot regress.'],
+            ['a', 'Cleared the timer on completion and stopped capturing the payload in the retry closure. Added a test that runs 10k retries and asserts the heap stays flat. Steady over a 6-hour soak now.'],
+          ],
+        },
+        data: {
+          title: 'Refactor the CSV importer for streaming', id: 'b54cda29',
+          cwd: 'C:\\work\\data-tools', turns: '4 turns shown',
+          chat: [
+            ['u', 'The CSV importer loads the whole file into memory. Make it stream so we can handle multi-GB files.'],
+            ['a', 'Rewrote it around a streaming parser: read the file as a stream, parse row by row, and batch inserts every 1,000 rows instead of building one giant array. Peak memory is flat regardless of file size.'],
+            ['u', 'What about a malformed row halfway through?'],
+            ['a', 'Each batch is its own transaction, and a bad row goes into an error report instead of aborting the import. You get a summary at the end: rows imported, rows skipped, and why.'],
+          ],
+        },
+      };
+
+      // --- tab switching ---
+      $$('.tab').forEach((t) => t.addEventListener('click', () => {
+        $$('.tab').forEach((x) => x.classList.toggle('on', x === t));
+        const name = t.dataset.tab;
+        $('#view-sessions').classList.toggle('on', name === 'sessions');
+        $('#view-instances').classList.toggle('on', name === 'instances');
+        closePanels();
+      }));
+
+      // --- slide-in panels (settings / queue), mutually exclusive ---
+      const scrim = $('.scrim');
+      function closePanels() {
+        $$('.panel').forEach((p) => p.classList.remove('on'));
+        scrim.classList.remove('on');
+        $$('[data-panel]').forEach((b) => b.classList.remove('active'));
+      }
+      function openPanel(id) {
+        closePanels();
+        const p = $('#panel-' + id);
+        if (!p) return;
+        p.classList.add('on');
+        scrim.classList.add('on');
+        $$('[data-panel="' + id + '"]').forEach((b) => b.classList.add('active'));
+      }
+      $$('[data-panel]').forEach((b) => b.addEventListener('click', () => {
+        const id = b.dataset.panel;
+        $('#panel-' + id).classList.contains('on') ? closePanels() : openPanel(id);
+      }));
+      scrim.addEventListener('click', closePanels);
+      $$('.panel .close').forEach((c) => c.addEventListener('click', closePanels));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanels(); });
+
+      // --- click a session row to swap the transcript ---
+      const detail = $('#view-sessions .detail');
+      $$('#view-sessions .row').forEach((row) => row.addEventListener('click', () => {
+        $$('#view-sessions .row').forEach((x) => x.classList.toggle('sel', x === row));
+        const s = SESSIONS[row.dataset.session];
+        if (!s) return;
+        detail.querySelector('.detail-head .h').textContent = s.title;
+        detail.querySelector('.detail-head .sub').innerHTML =
+          '<span class="m">' + s.id + '</span><span>' + esc(s.cwd) + '</span><span>' + s.turns + '</span>';
+        detail.querySelector('.chat').innerHTML =
+          s.chat.map((m) => '<div class="msg ' + m[0] + '">' + esc(m[1]) + '</div>').join('');
+      }));
+
+      // --- settings controls are live (toggles + theme segment) ---
+      $$('.switch').forEach((sw) => sw.addEventListener('click', () => sw.classList.toggle('on')));
+      $$('.seg').forEach((seg) => $$('span', seg).forEach((sp) =>
+        sp.addEventListener('click', () => $$('span', seg).forEach((x) => x.classList.toggle('on', x === sp)))));
+    })();
+  </script>
 </body>
 </html>
