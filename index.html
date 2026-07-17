@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CC Manager UI — run, queue and orchestrate Claude from one dashboard</title>
+  <meta name="description" content="A local dashboard for running Claude. See every isolated Claude Desktop instance and its account, live-tail your Claude Code sessions, and build a queue of claude runs — each with its own prompt, model, effort and account, dispatched on demand or on a schedule. One daemon, your browser, a tray icon. Nothing leaves your machine." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="alternate icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ccmanagerui.github.io/" />
+  <meta property="og:title" content="CC Manager UI — run, queue and orchestrate Claude" />
+  <meta property="og:description" content="A local dashboard for running Claude: every isolated Desktop instance and its account, live-tailed Claude Code sessions, and a queue of claude runs dispatched on demand or on a schedule. Local and private." />
+  <meta property="og:image" content="https://ccmanagerui.github.io/og.png" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="640" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CC Manager UI — run, queue and orchestrate Claude" />
+  <meta name="twitter:image" content="https://ccmanagerui.github.io/og.png" />
+
+  <style>
+    :root {
+      --bg:        #0a0a0a;
+      --bg-2:      #0e0e0f;
+      --surface:   #141415;
+      --surface-2: #191919;
+      --border:    rgba(255, 255, 255, 0.09);
+      --border-2:  rgba(255, 255, 255, 0.15);
+      --text:      #ededed;
+      --muted:     #a6a6a6;
+      --faint:     #6f6f6f;
+
+      /* Brand mark — terracotta (the logo, the favicon, the tray icon). */
+      --brand:        #c15f3c;
+      --brand-bright: #dd7e56;
+      --brand-deep:   #a94e2f;
+      --brand-glow:   rgba(193, 95, 60, 0.5);
+
+      /* The app's own UI accent, used only inside the product shot so it looks like the real thing. */
+      --app-accent: oklch(0.72 0.19 320);
+      --success:    oklch(0.7 0.17 152);
+
+      --radius: 14px;
+      --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(900px 520px at 82% -10%, rgba(193, 95, 60, 0.22), transparent 60%),
+        radial-gradient(720px 520px at -5% 0%, rgba(193, 95, 60, 0.08), transparent 55%);
+    }
+    a { color: inherit; text-decoration: none; }
+    code { font-family: var(--mono); font-size: 0.9em; background: rgba(255,255,255,0.07); padding: 1px 6px; border-radius: 5px; }
+    ::selection { background: rgba(193, 95, 60, 0.38); }
+
+    .wrap { width: min(1080px, 92vw); margin: 0 auto; }
+
+    /* ── Nav ─────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(10, 10, 10, 0.62);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 62px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 650; letter-spacing: -0.01em; }
+    .brand img { width: 27px; height: 27px; display: block; border-radius: 7px; }
+    .nav-links { display: flex; align-items: center; gap: 26px; font-size: 0.92rem; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-gh {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 13px; border: 1px solid var(--border-2); border-radius: 9px;
+      color: var(--text); transition: border-color 0.15s, background 0.15s;
+    }
+    .nav-gh:hover { background: var(--surface); border-color: var(--brand); }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 12px 20px; border-radius: 11px; font-weight: 560; font-size: 0.96rem;
+      border: 1px solid transparent; transition: transform 0.12s, background 0.15s, border-color 0.15s;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 10px 30px -10px var(--brand-glow); }
+    .btn-primary:hover { background: var(--brand-bright); }
+    .btn-ghost { color: var(--text); border-color: var(--border-2); }
+    .btn-ghost:hover { border-color: var(--brand); background: var(--surface); }
+
+    /* ── Hero ────────────────────────────────────────────── */
+    .hero { padding: 74px 0 0; }
+    .hero-inner { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.8rem; color: var(--muted); font-weight: 500;
+      padding: 5px 13px; border: 1px solid var(--border); border-radius: 999px;
+      background: var(--surface); margin-bottom: 22px;
+    }
+    h1 {
+      font-size: clamp(2.05rem, 5.2vw, 3.45rem);
+      line-height: 1.06; letter-spacing: -0.035em; margin: 0 0 20px; font-weight: 730;
+      max-width: 16ch; overflow-wrap: break-word;
+    }
+    h1 .grad {
+      background: linear-gradient(96deg, var(--brand-bright), var(--brand) 52%, #e0a24f);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lede { font-size: 1.14rem; color: var(--muted); max-width: 56ch; margin: 0 auto 32px; }
+    .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: center; }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 0 rgba(120,220,140,0.6); animation: pulse 2.4s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(120,220,140,0.5); } 70% { box-shadow: 0 0 0 7px rgba(120,220,140,0); } 100% { box-shadow: 0 0 0 0 rgba(120,220,140,0); } }
+    .sub-note { margin-top: 16px; font-size: 0.82rem; color: var(--faint); }
+
+    /* ── Product shot (browser frame + HTML replica of the app) ─── */
+    .showcase { margin-top: 54px; }
+    .frame {
+      border: 1px solid var(--border-2); border-radius: var(--radius); overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 50px 100px -40px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.02);
+    }
+    .frame-bar { display: flex; align-items: center; gap: 8px; padding: 11px 14px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+    .tl { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+    .tl-r { background: #f0655c; } .tl-y { background: #f2bd4a; } .tl-g { background: #4bd07a; }
+    .frame-url { margin-left: 10px; font-family: var(--mono); font-size: 0.74rem; color: var(--faint); }
+
+    /* the replica */
+    .app { display: flex; flex-direction: column; height: 588px; background: #0a0a0a; color: var(--text); font-size: 13px; user-select: none; }
+    .app-top { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--border); }
+    .app-top .logo { width: 22px; height: 22px; border-radius: 6px; }
+    .app-name { font-weight: 700; letter-spacing: -0.01em; font-size: 13px; }
+    .app-tabs { display: flex; gap: 4px; margin-left: 6px; }
+    .tab { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; color: var(--muted); font-weight: 500; }
+    .tab.on { background: var(--surface-2); color: var(--text); }
+    .tab svg { width: 14px; height: 14px; }
+    .app-top .spacer { margin-left: auto; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+    .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); }
+    .btn-q { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 8px; background: var(--app-accent); color: #1c0a1c; font-weight: 600; font-size: 12px; }
+    .btn-q svg { width: 14px; height: 14px; }
+    .icon-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; color: var(--muted); }
+    .icon-btn svg { width: 16px; height: 16px; }
+
+    .app-body { display: flex; min-height: 0; flex: 1; }
+    .list { width: 310px; flex: none; border-right: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; }
+    .list-tools { display: flex; gap: 8px; padding: 11px; }
+    .search { flex: 1; display: flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 9px; color: var(--faint); font-size: 12px; }
+    .search svg { width: 14px; height: 14px; }
+    .list-scroll { overflow: hidden; padding: 6px 8px; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+    .row { border: 1px solid transparent; border-radius: 10px; padding: 9px 11px; }
+    .row.sel { border-color: color-mix(in oklab, var(--app-accent) 45%, transparent); background: color-mix(in oklab, var(--app-accent) 12%, transparent); }
+    .row .title { font-weight: 560; font-size: 13px; line-height: 1.3; color: var(--text); }
+    .row .meta { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 11px; color: var(--faint); font-size: 11px; }
+    .row .meta span { display: inline-flex; align-items: center; gap: 4px; }
+    .row .meta svg { width: 11px; height: 11px; }
+    .row .badge { float: right; margin-left: 8px; font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 999px; }
+    .badge.run { color: var(--app-accent); background: color-mix(in oklab, var(--app-accent) 16%, transparent); }
+    .badge.queued { color: var(--muted); background: rgba(255,255,255,0.06); }
+
+    .detail { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+    .detail-head { padding: 13px 16px 10px; border-bottom: 1px solid transparent; }
+    .detail-head .h { font-size: 15px; font-weight: 640; }
+    .detail-head .sub { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 12px; color: var(--faint); font-size: 11px; }
+    .detail-head .sub .m { font-family: var(--mono); }
+    .chat { flex: 1; min-height: 0; overflow: hidden; padding: 14px 16px; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; }
+    .msg { max-width: 82%; padding: 9px 13px; border-radius: 16px; font-size: 12.5px; line-height: 1.5; }
+    .msg.u { align-self: flex-end; border-bottom-right-radius: 6px; background: color-mix(in oklab, var(--app-accent) 15%, transparent); }
+    .msg.a { align-self: flex-start; border-bottom-left-radius: 6px; background: rgba(255,255,255,0.05); }
+    .composer { border-top: 1px solid var(--border); padding: 11px 14px; display: flex; flex-direction: column; gap: 9px; }
+    .composer .ta { color: var(--faint); font-size: 12.5px; }
+    .composer .ctrls { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 11.5px; }
+    .chip svg { width: 12px; height: 12px; }
+    .composer .send { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; background: var(--app-accent); color: #1c0a1c; font-weight: 600; font-size: 12px; }
+    .composer .send svg { width: 13px; height: 13px; }
+
+    /* ── Sections ────────────────────────────────────────── */
+    section { padding: 58px 0; }
+    .sec-eyebrow { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--brand-bright); font-weight: 600; margin-bottom: 12px; }
+    h2 { font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.02em; margin: 0 0 8px; font-weight: 680; }
+    .sec-lede { color: var(--muted); max-width: 60ch; margin: 0; }
+
+    /* Steps */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 30px; }
+    .step { border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; background: linear-gradient(180deg, var(--surface), var(--bg-2)); }
+    .step .num { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: rgba(193,95,60,0.14); color: var(--brand-bright); border: 1px solid rgba(193,95,60,0.34); font-weight: 700; font-size: 0.9rem; margin-bottom: 13px; }
+    .step h3 { margin: 0 0 5px; font-size: 1rem; font-weight: 620; }
+    .step p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
+    /* Feature grid */
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 30px; }
+    .card {
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 22px;
+      background: linear-gradient(180deg, var(--surface), var(--bg-2));
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .card:hover { border-color: var(--border-2); transform: translateY(-2px); }
+    .card .ico { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; margin-bottom: 14px; border: 1px solid var(--border); color: var(--brand-bright); }
+    .card .ico svg { width: 18px; height: 18px; }
+    .card h3 { margin: 0 0 6px; font-size: 1.02rem; font-weight: 620; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
+    /* Humans + agents duo */
+    .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px; }
+    .duo-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; background: linear-gradient(180deg, var(--surface), var(--bg-2)); }
+    .duo-card.agent { border-color: rgba(193,95,60,0.3); background: linear-gradient(180deg, rgba(193,95,60,0.08), var(--bg-2)); }
+    .duo-card .ico { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; margin-bottom: 14px; border: 1px solid var(--border); color: var(--brand-bright); }
+    .duo-card .ico svg { width: 18px; height: 18px; }
+    .duo-card h3 { margin: 0 0 7px; font-size: 1.12rem; font-weight: 640; }
+    .duo-card p { margin: 0; color: var(--muted); font-size: 0.96rem; }
+    .duo-card .mcp-list { margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 7px; }
+    .duo-card .mcp-list li { font-size: 0.78rem; color: var(--muted); padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; background: rgba(255,255,255,0.02); font-family: var(--mono); }
+
+    /* Local-first band */
+    .band {
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 26px 28px;
+      background: linear-gradient(100deg, rgba(193,95,60,0.08), rgba(20,20,21,0.4));
+      display: flex; gap: 18px; align-items: flex-start;
+    }
+    .band .tag { flex: none; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand-bright); border: 1px solid rgba(193,95,60,0.4); background: rgba(193,95,60,0.12); padding: 5px 11px; border-radius: 999px; margin-top: 2px; }
+    .band p { margin: 0; color: var(--muted); font-size: 0.98rem; }
+    .band strong { color: var(--text); font-weight: 600; }
+
+    /* Stack strip */
+    .stack { text-align: center; }
+    .stack .label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--faint); margin-bottom: 16px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .stack .chip { font-size: 0.86rem; color: var(--muted); padding: 7px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); }
+    .stack .chip b { color: var(--text); font-weight: 600; }
+
+    /* Footer CTA */
+    .foot-cta { text-align: center; padding: 68px 0 44px; }
+    .foot-cta h2 { margin-bottom: 10px; }
+    .foot-cta p { color: var(--muted); margin: 0 auto 26px; max-width: 50ch; }
+
+    footer { border-top: 1px solid var(--border); padding: 34px 0; }
+    .foot-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; }
+    .foot-brand { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 0.9rem; }
+    .foot-brand img { width: 22px; height: 22px; border-radius: 6px; }
+    .foot-links { display: flex; gap: 22px; font-size: 0.9rem; color: var(--muted); }
+    .foot-links a:hover { color: var(--text); }
+    .foot-legal { color: var(--faint); font-size: 0.84rem; text-align: right; }
+    .foot-legal a { color: var(--muted); }
+    .foot-legal a:hover { color: var(--text); }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .list { width: 260px; }
+    }
+    @media (max-width: 860px) {
+      .steps, .grid { grid-template-columns: 1fr 1fr; }
+      .nav-links .hide-sm { display: none; }
+    }
+    @media (max-width: 720px) {
+      /* product shot: drop the list, show the conversation full width */
+      .list { display: none; }
+      .app { height: 500px; }
+    }
+    @media (max-width: 560px) {
+      .steps, .grid, .duo { grid-template-columns: 1fr; }
+      .foot-inner { flex-direction: column; align-items: flex-start; }
+      .foot-legal { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .pulse { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="wrap nav-inner">
+      <a class="brand" href="/"><img src="icon.svg" alt="" /><span>CC Manager UI</span></a>
+      <div class="nav-links">
+        <a class="hide-sm" href="#how">How it works</a>
+        <a class="hide-sm" href="#features">Features</a>
+        <a class="hide-sm" href="#mcp">MCP</a>
+        <a class="nav-gh" href="https://github.com/LunarWerxs/ccmanagerui" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap hero-inner">
+      <span class="eyebrow"><span class="pulse"></span> A local dashboard for running Claude</span>
+      <h1>Run, queue and orchestrate Claude <span class="grad">from one dashboard</span></h1>
+      <p class="lede">See every isolated Claude Desktop instance and which account it's on, live-tail all your Claude Code sessions, and build a queue of <code>claude</code> runs — each with its own prompt, model, effort and account — dispatched on demand or on a schedule. One daemon, your browser, a tray icon.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/LunarWerxs/ccmanagerui/releases" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          Download
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/LunarWerxs/ccmanagerui" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          View source
+        </a>
+      </div>
+      <p class="sub-note">Free &amp; open source (MIT) · Windows, macOS, Linux · no account needed to run it</p>
+    </div>
+
+    <div class="wrap showcase">
+      <div class="frame">
+        <div class="frame-bar">
+          <span class="tl tl-r"></span><span class="tl tl-y"></span><span class="tl tl-g"></span>
+          <span class="frame-url">localhost:7787</span>
+        </div>
+        <!-- A faithful, non-interactive replica of the Sessions view. -->
+        <div class="app" aria-hidden="true">
+          <div class="app-top">
+            <img class="logo" src="icon.svg" alt="" />
+            <span class="app-name">CC Manager UI</span>
+            <div class="app-tabs">
+              <span class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>Sessions</span>
+              <span class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg>Instances</span>
+            </div>
+            <span class="spacer"></span>
+            <span class="pill"><span class="dot"></span> Scheduler off</span>
+            <span class="btn-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>Queue</span>
+            <span class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></span>
+          </div>
+          <div class="app-body">
+            <div class="list">
+              <div class="list-tools">
+                <span class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search sessions…</span>
+              </div>
+              <div class="list-scroll">
+                <div class="row sel">
+                  <span class="badge run">running</span>
+                  <div class="title">Add retry + backoff to the API client</div>
+                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>acme-checkout</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>feat/retry-backoff</span><span>47 · 5m ago</span></div>
+                </div>
+                <div class="row">
+                  <div class="title">Fix the flaky auth test on CI</div>
+                  <div class="meta"><span>billing-service</span><span>fix/flaky-auth</span><span>19m ago</span></div>
+                </div>
+                <div class="row">
+                  <span class="badge queued">queued</span>
+                  <div class="title">Migrate the settings page to the design system</div>
+                  <div class="meta"><span>dashboard</span><span>redesign/settings</span><span>54m ago</span></div>
+                </div>
+                <div class="row">
+                  <div class="title">Wire up the Stripe webhook handlers</div>
+                  <div class="meta"><span>payments</span><span>feat/webhooks</span><span>2h ago</span></div>
+                </div>
+                <div class="row">
+                  <div class="title">Track down the memory leak in the worker pool</div>
+                  <div class="meta"><span>ingest-worker</span><span>main</span><span>4h ago</span></div>
+                </div>
+                <div class="row">
+                  <div class="title">Refactor the CSV importer for streaming</div>
+                  <div class="meta"><span>data-tools</span><span>refactor/csv</span><span>6h ago</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="detail">
+              <div class="detail-head">
+                <div class="h">Add retry + backoff to the API client</div>
+                <div class="sub"><span class="m">9e3779b1</span><span>C:\work\acme-checkout</span><span>6 turns shown</span></div>
+              </div>
+              <div class="chat">
+                <div class="msg u">Our API client hammers the server and gives up on the first 429. Add retry with exponential backoff, and treat 429 vs 529 differently.</div>
+                <div class="msg a">Good call — those are two different failures. A 429 is your own rate cap and comes with a Retry-After header we should honour exactly. A 529 is the server being overloaded; that one we retry on our own schedule with backoff + jitter.</div>
+                <div class="msg u">Cap it at 5 attempts and make the jitter full, not equal.</div>
+                <div class="msg a">Done. Base delay 500ms, doubling each attempt, full jitter over [0, delay], hard cap of 5 tries. On a 429 I sleep for exactly Retry-After when present. Everything else fails fast.</div>
+                <div class="msg u">Nice. Add a test that a 529 then a 200 resolves, and that a 400 never retries.</div>
+                <div class="msg a">Added three: 529→200 resolves after one retry, a 429 waits for Retry-After, and a 400 throws with zero retries. All green.</div>
+              </div>
+              <div class="composer">
+                <div class="ta">Message this session — Enter to send, Shift+Enter for a new line</div>
+                <div class="ctrls">
+                  <span class="chip">Opus 4.8</span>
+                  <span class="chip">Effort: high</span>
+                  <span class="chip">Permissions</span>
+                  <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>work@acme</span>
+                  <span class="send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>Send</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="how" class="wrap">
+    <div class="sec-eyebrow">How it works</div>
+    <h2>One daemon, your whole Claude workspace</h2>
+    <div class="steps">
+      <div class="step"><span class="num">1</span><h3>Start the daemon</h3><p>Run the tray app (or <code>bun run start</code>). It serves the dashboard and opens it in your browser — no console to babysit.</p></div>
+      <div class="step"><span class="num">2</span><h3>See everything</h3><p>Every isolated Desktop instance and its account, and every Claude Code session across them, live-tailed in one place.</p></div>
+      <div class="step"><span class="num">3</span><h3>Queue &amp; dispatch</h3><p>Build a queue of <code>claude</code> runs and fire them on demand or on a schedule — or hand the whole thing to your agents over MCP.</p></div>
+    </div>
+  </section>
+
+  <section id="features" class="wrap">
+    <div class="sec-eyebrow">What you get</div>
+    <h2>Many Claudes, one pane of glass</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg></div>
+        <h3>Multi-instance manager</h3>
+        <p>Every isolated Claude Desktop instance on the machine — its account (email + plan), live memory and uptime — in one sortable table. Open, quit, create, delete, rename, or drop a per-instance desktop shortcut.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg></div>
+        <h3>Sessions across every instance</h3>
+        <p>Browse and live-tail your Claude Code transcripts, filtered by instance, with "thinking" hidden by default. Open the raw <code>.jsonl</code>, download it, or copy the file — named after the session, not its uuid.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>
+        <h3>Chat composer</h3>
+        <p>Type at the bottom of a transcript and dispatch straight to that session — now, queued, or scheduled for later. Multi-select to message many sessions at once.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></div>
+        <h3>Queue + scheduler</h3>
+        <p>Build a queue of <code>claude</code> runs — prompt, model, effort, permission mode, account — and dispatch on demand, or let the scheduler run them with concurrency and spacing controls. Off by default.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
+        <h3>Runs that survive a restart</h3>
+        <p>Dispatched runs run under a detached supervisor and reattach after a quit or an auto-update, instead of dying mid-flight.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6.36 6.36 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></div>
+        <h3>Auto-resume past a rate limit</h3>
+        <p>Sessions stopped by a 5-hour limit are picked back up once the window resets — including ones you started yourself in a terminal. Gated on your weekly usage, capped per session, off by default. A 529 overload retries in seconds, automatically.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="mcp" class="wrap">
+    <div class="sec-eyebrow">One daemon, two front doors</div>
+    <h2>Built for you and your agents</h2>
+    <div class="duo">
+      <div class="duo-card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
+        <h3>You get a dashboard</h3>
+        <p>Click through your instances, sessions, queue and accounts in your regular browser. Message a session, schedule a run, watch it stream back — no terminal juggling.</p>
+      </div>
+      <div class="duo-card agent">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M12 8V4"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/><path d="M2 13v2M22 13v2"/></svg></div>
+        <h3>Your agents get MCP</h3>
+        <p>The same daemon is exposed over MCP stdio, so Claude Code, Claude Desktop or Cursor can drive sessions, the run queue, the scheduler, accounts and instances — the exact same state you click.</p>
+        <ul class="mcp-list">
+          <li>sessions</li><li>queue</li><li>scheduler</li><li>instances</li><li>accounts</li><li>check_usage</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="band">
+      <span class="tag">Local &amp; private</span>
+      <p><strong>Runs entirely on your machine.</strong> One daemon on your localhost, your regular browser, and a tray icon — no cloud, no account needed to run it, nothing leaves your computer. Open source under MIT.</p>
+    </div>
+  </section>
+
+  <section class="wrap stack">
+    <div class="label">Built with</div>
+    <div class="chips">
+      <span class="chip"><b>Bun</b> + Hono</span>
+      <span class="chip"><b>Vue 3</b> + Vite</span>
+      <span class="chip">shadcn-vue</span>
+      <span class="chip">Tailwind v4</span>
+      <span class="chip"><b>bun:sqlite</b></span>
+      <span class="chip">MCP stdio</span>
+    </div>
+  </section>
+
+  <section class="wrap foot-cta">
+    <h2>Stop tab-juggling your Claudes</h2>
+    <p>One daemon, one dashboard for every instance, session and run — and an MCP door for your agents.</p>
+    <a class="btn btn-primary" href="https://github.com/LunarWerxs/ccmanagerui/releases" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+      Download a release
+    </a>
+  </section>
+
+  <footer>
+    <div class="wrap foot-inner">
+      <div class="foot-brand">
+        <img src="icon.svg" alt="" />
+        <span>CC Manager UI — run, queue and orchestrate Claude</span>
+      </div>
+      <div class="foot-links">
+        <a href="https://github.com/LunarWerxs/ccmanagerui" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/LunarWerxs/ccmanagerui#mcp-server" target="_blank" rel="noopener">MCP</a>
+        <a href="https://github.com/LunarWerxs/ccmanagerui/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a>
+        <a href="https://github.com/LunarWerxs/ccmanagerui/releases" target="_blank" rel="noopener">Releases</a>
+      </div>
+      <div class="foot-legal">
+        MIT licensed · Built by <a href="https://lunarwerx.com/" target="_blank" rel="noopener">LunarWerx</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
