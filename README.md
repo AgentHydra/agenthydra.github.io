@@ -1,6 +1,6 @@
 # ccmanagerui.github.io
 
-The landing page for **CC Manager UI** — a local dashboard for running, queuing and
+The landing page for **CC Manager UI**: a local dashboard for running, queuing and
 orchestrating Claude across every isolated Desktop instance and Claude Code session on your
 machine.
 
