@@ -454,18 +454,18 @@
     }
   </style>
 <style>
-/* Back to the parent studio. Added with the move onto *.lunarwerx.com: every
-   product site is a subdomain of the studio now, so each one needs a way up.
-   Colour is inherited and the border uses currentColor, so this picks up
-   whatever the surrounding nav already uses without being told per site. */
-a.lw-parent{display:inline-flex;align-items:center;gap:.4rem;flex:none;margin-right:.7rem;padding:.4rem .7rem;border:1px solid;border-radius:999px;font:inherit;font-size:.8125rem;font-weight:500;line-height:1;text-decoration:none;color:inherit;opacity:.62;white-space:nowrap;transition:opacity .15s ease}
+/* Back to the parent studio: a bare arrow at the top left of the page.
+   Deliberately not in the header and deliberately unstyled beyond a hover
+   fade. Colour is inherited so it picks up whatever each site already uses.
+   `fixed`, not `absolute`: every one of these sites has a position:sticky nav
+   with a background, and an absolute arrow at the top left would sit under it. */
+a.lw-parent{position:fixed;top:.55rem;left:.55rem;z-index:1000;display:inline-flex;align-items:center;justify-content:center;width:1.9rem;height:1.9rem;color:inherit;opacity:.45;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:opacity .15s ease}
 a.lw-parent:hover,a.lw-parent:focus-visible{opacity:1}
-a.lw-parent svg{flex:none;display:block}
-.lw-home-group{display:inline-flex;align-items:center;min-width:0}
-/* The label is the first thing to go when the bar gets tight, but the control
-   itself survives every width: on a phone this is the only route back. */
-@media (max-width:600px){a.lw-parent{min-height:38px;padding:.5rem .75rem}}
-@media (max-width:360px){a.lw-parent span{display:none}a.lw-parent{justify-content:center;min-width:38px;padding:.5rem;margin-right:.5rem}}
+a.lw-parent svg{display:block}
+/* The arrow is out of the flow now, so the header's first item would slide
+   under it wherever the nav column starts at the viewport edge. */
+.lw-home-group{padding-left:2.75rem}
+@media (prefers-reduced-motion:reduce){a.lw-parent{transition:none}}
 </style>
     <!-- ARGUS Analytics Pixel (Connections, analytics.connections.icu).
          The key is a PUBLIC ingest key and is meant to ship in client JS.
@@ -512,9 +512,10 @@ a.lw-parent svg{flex:none;display:block}
     <!-- End ARGUS Analytics Pixel -->
 </head>
 <body>
+<a class="lw-parent" href="https://lunarwerx.com/" title="Back to LunarWerx Studios" aria-label="Back to LunarWerx Studios, the parent studio"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></a>
   <nav>
     <div class="wrap nav-inner">
-      <span class="lw-home-group"><a class="lw-parent" href="https://lunarwerx.com/" aria-label="Back to LunarWerx Studios, the parent studio"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span>LunarWerx</span></a><a class="brand" href="/"><img src="icon.svg" alt="" /><span>CC Manager UI</span></a></span>
+      <span class="lw-home-group"><a class="brand" href="/"><img src="icon.svg" alt="" /><span>CC Manager UI</span></a></span>
       <div class="nav-links">
         <a class="hide-sm" href="#how">How it works</a>
         <a class="hide-sm" href="#features">Features</a>
