@@ -466,6 +466,19 @@ a.lw-parent svg{display:block}
    under it wherever the nav column starts at the viewport edge. */
 .lw-home-group{padding-left:2.75rem}
 @media (prefers-reduced-motion:reduce){a.lw-parent{transition:none}}
+/* The tooltip. Replaces the native `title`, which waits ~1s, cannot be styled,
+   and draws outside the page. Right of the arrow because the arrow is pinned to
+   the top left corner and that is the only direction with room. */
+a.lw-parent .lw-tip{position:absolute;top:50%;left:calc(100% + 9px);transform:translateY(-50%) translateX(-3px);display:flex;flex-direction:column;gap:.1rem;padding:.4rem .58rem;border-radius:.5rem;border:1px solid rgba(255,255,255,.14);background:rgba(9,11,17,.97);box-shadow:0 12px 30px -14px rgba(0,0,0,.9);color:#e9ecf3;font-family:inherit;line-height:1.3;text-align:left;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .12s ease,transform .12s ease,visibility 0s linear .12s}
+a.lw-parent .lw-tip>span:first-child{font-size:.78rem;font-weight:600}
+a.lw-parent .lw-tip>span:last-child{font-size:.72rem;font-weight:400;opacity:.6}
+/* Caret, drawn off the panel so it cannot be clipped by the arrow's own box. */
+a.lw-parent .lw-tip::before{content:"";position:absolute;top:50%;right:100%;margin-top:-4px;border:4px solid transparent;border-right-color:rgba(9,11,17,.97)}
+a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility:visible;transform:translateY(-50%) translateX(0);transition-delay:0s}
+/* A finger has no hover: the panel would appear on tap and then follow the
+   reader to the next page, which is worse than not having it. */
+@media (hover:none){a.lw-parent .lw-tip{display:none}}
+@media (prefers-reduced-motion:reduce){a.lw-parent .lw-tip{transition:opacity .12s ease,visibility 0s linear .12s;transform:translateY(-50%)}a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{transform:translateY(-50%)}}
 </style>
     <!-- ARGUS Analytics Pixel (Connections, analytics.connections.icu).
          The key is a PUBLIC ingest key and is meant to ship in client JS.
@@ -512,7 +525,7 @@ a.lw-parent svg{display:block}
     <!-- End ARGUS Analytics Pixel -->
 </head>
 <body>
-<a class="lw-parent" href="https://lunarwerx.com/" title="Back to LunarWerx Studios" aria-label="Back to LunarWerx Studios, the parent studio"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></a>
+<a class="lw-parent" href="https://lunarwerx.com/" aria-label="Back to LunarWerx Studios, the parent studio"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span class="lw-tip" aria-hidden="true"><span>LunarWerx Studios</span><span>Every app we build, in one place</span></span></a>
   <nav>
     <div class="wrap nav-inner">
       <span class="lw-home-group"><a class="brand" href="/"><img src="icon.svg" alt="" /><span>CC Manager UI</span></a></span>
