@@ -4,7 +4,7 @@ The landing page for **CC Manager UI**: a local dashboard for running, queuing a
 orchestrating Claude across every isolated Desktop instance and Claude Code session on your
 machine.
 
-🔗 **Live:** https://ccmanagerui.github.io
+🔗 **Live:** https://ccmanagerui.lunarwerx.com
 📦 **Source & releases:** https://github.com/LunarWerxs/ccmanagerui
 
 A single self-contained `index.html` (no build step, no dependencies), served by GitHub Pages.
