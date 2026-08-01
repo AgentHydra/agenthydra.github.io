@@ -453,11 +453,25 @@
       .pulse, .caret { animation: none; }
     }
   </style>
+<style>
+/* Back to the parent studio. Added with the move onto *.lunarwerx.com: every
+   product site is a subdomain of the studio now, so each one needs a way up.
+   Colour is inherited and the border uses currentColor, so this picks up
+   whatever the surrounding nav already uses without being told per site. */
+a.lw-parent{display:inline-flex;align-items:center;gap:.4rem;flex:none;margin-right:.7rem;padding:.4rem .7rem;border:1px solid;border-radius:999px;font:inherit;font-size:.8125rem;font-weight:500;line-height:1;text-decoration:none;color:inherit;opacity:.62;white-space:nowrap;transition:opacity .15s ease}
+a.lw-parent:hover,a.lw-parent:focus-visible{opacity:1}
+a.lw-parent svg{flex:none;display:block}
+.lw-home-group{display:inline-flex;align-items:center;min-width:0}
+/* The label is the first thing to go when the bar gets tight, but the control
+   itself survives every width: on a phone this is the only route back. */
+@media (max-width:600px){a.lw-parent{min-height:38px;padding:.5rem .75rem}}
+@media (max-width:360px){a.lw-parent span{display:none}a.lw-parent{justify-content:center;min-width:38px;padding:.5rem;margin-right:.5rem}}
+</style>
 </head>
 <body>
   <nav>
     <div class="wrap nav-inner">
-      <a class="brand" href="/"><img src="icon.svg" alt="" /><span>CC Manager UI</span></a>
+      <span class="lw-home-group"><a class="lw-parent" href="https://lunarwerx.com/" aria-label="Back to LunarWerx Studios, the parent studio"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span>LunarWerx</span></a><a class="brand" href="/"><img src="icon.svg" alt="" /><span>CC Manager UI</span></a></span>
       <div class="nav-links">
         <a class="hide-sm" href="#how">How it works</a>
         <a class="hide-sm" href="#features">Features</a>
