@@ -1,4 +1,4 @@
-# CC Manager UI - https://ccmanagerui.lunarwerx.com/
+# AgentHydra - https://agenthydra.lunarwerx.com/
 
 # Answer / search assistants (cite us, drive traffic)
 User-agent: OAI-SearchBot
@@ -26,4 +26,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://ccmanagerui.lunarwerx.com/sitemap.xml
+Sitemap: https://agenthydra.lunarwerx.com/sitemap.xml
