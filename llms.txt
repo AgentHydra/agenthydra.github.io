@@ -1,0 +1,25 @@
+# AgentHydra
+
+> A local dashboard for every AI coding session on your machine. Live-tail Claude Code, Codex and OpenCode in a single list, keep isolated Claude and Codex instances straight about which account is which, and queue claude runs to fire now or on a schedule.
+
+If you run AI tools in more than one place, nothing normally shows all of that local history at once. AgentHydra is one local daemon that reads what your tools already write to disk (Claude transcripts, Codex rollout files, the OpenCode database) and puts it in a single browser tab, without being a Claude client itself or replacing one. The whole API is also exposed over MCP stdio, so Claude Code, Claude Desktop or Cursor can drive the same sessions, queue, scheduler, instance managers and quota state the dashboard shows.
+
+## Key facts
+- Reads and lists Claude Code, Codex and OpenCode sessions together, newest first, each badged with the tool that wrote it.
+- Only Claude sessions can be messaged back from AgentHydra; Codex and OpenCode support is read-only (live-tail, search and filter, no reply box).
+- Manages isolated Claude Desktop and Claude CLI instances (account, plan, weekly quota, live process/memory/uptime) and isolated Codex Desktop/CLI instances, each with its own `CODEX_HOME` and desktop profile.
+- Queue and schedule `claude` runs with their own prompt, working directory, model, effort, permission mode and account; queued runs can be given a start time and reattach after an app restart.
+- Sessions stopped by a 5-hour rate limit can resume themselves once the window resets, gated on weekly usage and off by default.
+- The whole API is exposed over MCP stdio (`sessions`, `queue`, `timing`, `instances`, `codex`, `usage` tool groups, among others) for MCP-speaking agents like Claude Code, Claude Desktop or Cursor.
+- Agents can check an account's remaining quota via `check_usage` before starting a heavy fan-out.
+- Not entirely private: the one thing that leaves your machine on its own is a periodic update check against studio.connections.icu, which sends the app version, a coarse OS tag, and a random per-install id. The server derives a coarse location (country, region, city, timezone), your network's ASN, locale, and a truncated user agent from that request, but never an IP address, hostname, username, file path, account, or email. Set AGENTHYDRA_NO_PING=1 to opt out; the check then goes straight to GitHub's API, with no install id or telemetry. The other thing that leaves is the optional ChatGPT handoff, which opens the provider and leaves the final upload to you. Otherwise local: one daemon on loopback, your regular browser, a tray icon, no cloud service, no account to sign up for.
+- Free and open source under the MIT license. Runs on Windows, macOS and Linux; the tray launcher is Windows only.
+- Serves the dashboard at `http://localhost:7787`. Install with a single `.exe`/build from Releases, or from source with Bun (`bun install`, `bun run build`, `bun run start`).
+
+## Links
+- Home: https://agenthydra.lunarwerx.com/
+- Source code: https://github.com/LunarWerxs/AgentHydra
+- Download: https://github.com/LunarWerxs/AgentHydra/releases
+- Reference / MCP docs: https://github.com/LunarWerxs/AgentHydra/blob/main/docs/REFERENCE.md
+- Changelog: https://github.com/LunarWerxs/AgentHydra/blob/main/CHANGELOG.md
+- License: https://github.com/LunarWerxs/AgentHydra (MIT, see the LICENSE file)
