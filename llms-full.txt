@@ -1,0 +1,105 @@
+# AgentHydra: full brief
+
+Last updated: 2026-08-23 · Current version: v0.28.0 · License: MIT (free, open source)
+Home: https://agenthydra.lunarwerx.com/ · Source: https://github.com/LunarWerxs/AgentHydra
+
+## What it is
+
+AgentHydra is a local dashboard that puts every Claude Code, Codex and OpenCode session on a
+machine into one list, manages isolated Claude and Codex instances, and queues `claude` runs to
+fire now or on a schedule. It is not a Claude client and does not replace one: it reads the local
+files those tools already write (Claude transcripts, Codex rollout JSONL, the OpenCode SQLite
+database) and serves a browser dashboard at `http://localhost:7787`, plus the same API over MCP
+stdio for agents.
+
+## Who it is for
+
+Anyone running more than one AI coding CLI, or more than one account of the same CLI, on one
+machine: several Claude Desktop/CLI logins, a personal and work Codex account, or Claude Code
+alongside Codex and OpenCode, with no single place that shows all of that history at once.
+
+## Key facts
+
+- Reads and lists Claude Code, Codex and OpenCode sessions together, newest first, badged by
+  tool, searchable and filterable across all three. Also read-only lists the shared "foreign"
+  session format used by Cursor, Windsurf, Zed and Copilot CLI where present.
+- Only Claude sessions can be messaged back; Codex/OpenCode are read-only live-tail, because
+  only Claude ships a CLI that can be handed a prompt.
+- Manages isolated Claude Desktop/CLI instances (account, plan, weekly quota, live
+  process/memory/uptime) and isolated Codex Desktop/CLI instances, each with its own
+  `CODEX_HOME`, so a work and a personal login run side by side.
+- Queue and schedule `claude` runs with their own prompt, working directory, model, effort,
+  permission mode and account; queued runs carry a start time and reattach after a restart.
+- Sessions stopped by a 5-hour rate limit can auto-resume once the window resets, gated on
+  weekly usage, off by default.
+- Whole API over MCP stdio (sessions, queue, timing, instances, codex, usage tool groups) for
+  Claude Code, Claude Desktop or Cursor. Agents can call `check_usage` before a heavy fan-out.
+- Quick instance mode (`AgentHydra.exe --instances`) skips the scanner/database/scheduler for a
+  small start/focus/stop window on its own port.
+- Not entirely private: a periodic, opt-out update check against studio.connections.icu sends
+  app version, a coarse OS tag, and a random per-install id (never an IP, hostname, username,
+  file path, account or email). `AGENTHYDRA_NO_PING=1` routes the check to GitHub's API instead,
+  with no install id. The optional ChatGPT handoff is the other thing that leaves the machine.
+- Built with Bun + Hono, Vue 3 + Vite, shadcn-vue, Tailwind v4, bun:sqlite, MCP stdio.
+
+## Install
+
+- Windows: run the versioned `.exe` from Releases directly, no console window.
+- Linux/macOS: one-executable archives on Releases. No Bun needed.
+- From source: clone, `bun install`, `bun run build`, `bun run start` (needs bun.sh).
+- Dashboard binds to `http://localhost:7787` on loopback only either way.
+- Try without risk: `AGENTHYDRA_FAKE=1` stands in for the `claude` CLI so dispatch touches no
+  real quota or repos.
+
+## Pricing
+
+Free and open source, MIT license. No account, no paid tier. See `/pricing.md` for the
+machine-readable breakdown, including costs the user still carries themselves (their own Claude
+or OpenAI subscription/API key for dispatch).
+
+## How it compares
+
+- **Separate terminals** (the default): one window per session, switched by hand, history
+  scattered across whatever each CLI wrote. AgentHydra's purpose is one list instead.
+- **Crystal, now Nimbalyst** (stravu): an Electron app that launches new coding-agent
+  sessions in parallel git worktrees for comparing approaches, covering Claude Code and
+  Codex with OpenCode and Copilot in alpha. AgentHydra reads existing sessions instead of
+  spinning up new worktrees.
+- **Conductor** (Melty Labs): a Mac app running a team of parallel Claude Code, Codex, Cursor
+  and OpenCode agents, each in an isolated worktree, billed to the user's own subscription.
+  AgentHydra runs on Windows/macOS/Linux as a dashboard over existing sessions.
+- **ccmanager** (kbwo, npm): a tmux-free terminal UI for Claude Code, Codex, Gemini and other
+  CLI sessions across worktrees. AgentHydra is a browser dashboard plus MCP server, and also
+  covers instance identity, a queue/scheduler, and quota checks.
+
+## Limitations
+
+- Tray launcher is Windows only. macOS/Linux builds exist but are not yet verified.
+- Windows instance management needs the classic Claude Desktop installer, not the MSIX package.
+- Dispatch needs the user's own `claude` CLI. Codex/OpenCode support is optional, appearing
+  automatically if their stores exist.
+
+## FAQ
+
+Q: Is AgentHydra free? A: Yes, MIT-licensed, no account, no cloud service.
+Q: What tools does it support? A: Claude Code, Codex and OpenCode, side by side.
+Q: Can I reply to Codex/OpenCode sessions? A: No, read-only; only Claude ships a CLI to reply to.
+Q: Is it private? A: Mostly; a small opt-out update ping and the optional ChatGPT handoff are
+the only things that leave the machine on their own.
+Q: What can my agents do over MCP? A: Everything the dashboard does: sessions, queue, scheduler,
+instances, quota, via `check_usage` and the rest.
+Q: Does it work offline? A: Yes for reading/messaging; dispatch needs whatever Claude needs.
+Q: How does it differ from Crystal/Conductor/ccmanager? A: They launch new parallel sessions in
+worktrees; AgentHydra reads sessions already on the machine and adds a queue/scheduler/MCP layer.
+Q: Do I need Bun? A: Only to run from source; packaged builds need nothing else.
+
+## Links
+
+- Home: https://agenthydra.lunarwerx.com/
+- Source: https://github.com/LunarWerxs/AgentHydra
+- Download: https://github.com/LunarWerxs/AgentHydra/releases
+- Reference/MCP docs: https://github.com/LunarWerxs/AgentHydra/blob/main/docs/REFERENCE.md
+- Changelog: https://github.com/LunarWerxs/AgentHydra/blob/main/CHANGELOG.md
+- Pricing: https://agenthydra.lunarwerx.com/pricing.md
+- License: MIT, see the LICENSE file in the source repo
+- Parent studio: https://lunarwerx.com/
