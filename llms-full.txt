@@ -1,6 +1,6 @@
 # AgentHydra: full brief
 
-Last updated: 2026-08-23 · Current version: v0.28.0 · License: MIT (free, open source)
+Last updated: 2026-08-23 · Current version: v0.36.0 · License: MIT (free, open source)
 Home: https://agenthydra.lunarwerx.com/ · Source: https://github.com/LunarWerxs/AgentHydra
 
 ## What it is

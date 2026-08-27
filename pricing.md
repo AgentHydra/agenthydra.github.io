@@ -12,7 +12,7 @@ Machine-readable summary for agentic buyers and procurement checks. Last updated
 | Account required | No |
 | Seats / user limits | None (local software, not a hosted service) |
 | Trial or freemium gate | None; nothing is paywalled or time-limited |
-| Current version | v0.28.0 |
+| Current version | v0.36.0 |
 | Platforms | Windows, macOS, Linux |
 
 AgentHydra itself is free and open source under the MIT license
