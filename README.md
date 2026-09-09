@@ -7,5 +7,7 @@ queues `claude` runs to fire now or on a schedule.
 🔗 **Live:** https://agenthydra.lunarwerx.com
 📦 **Source & releases:** https://github.com/LunarWerxs/AgentHydra
 
+[![Discord](https://img.shields.io/badge/Discord-join_the_community-5865F2?logo=discord&logoColor=white)](https://discord.gg/PsWpeNUzhk)
+
 A single self-contained `index.html` (no build step, no dependencies), served by GitHub Pages.
 Edit it directly and push to `main`.
