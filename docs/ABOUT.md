@@ -50,31 +50,31 @@ edit the dossier, not this block. Everything ABOVE the marker is yours.
 
 ### Features
 
-14 recorded - 14 shipped, 0 partial, 0 planned. Each `path:line` is where the feature is DEFINED, checked by `odin codex check`.
+14 recorded - 14 shipped, 0 partial, 0 planned. Each path is where the feature is DEFINED; the exact lines live in the Codex entry, which `odin codex check` re-verifies and repairs.
 
 **Shipped**
 
-- **Hero section and product pitch** - Eyebrow tagline, headline with gradient text, lede copy, and dual CTA buttons (Download / GitHub) with live update indicator; sets the value proposition: unified session list, instance isolation, queue and scheduler. - `index.html:814`
-- **Product screenshot (interactive replica)** - HTML/CSS replica of the AgentHydra app UI inside a browser frame, demonstrating the session list, provider badges, details pane, queue panel, and instances table. Includes hover states and tab switching. - `index.html:832`
-- **Three-step setup guide** - Step-by-step card grid explaining how AgentHydra works: start the daemon, it auto-discovers sessions, then reply, queue or hand off to agents. - `index.html:1167`
-- **Provider compatibility matrix** - Table showing which features work with which AI tools (Claude Code, Codex, OpenCode): one list, instances, messaging, queuing, scheduler, MCP, marked by checkmark or dash per provider. - `index.html:1196`
-- **Features grid (nine capabilities)** - Nine feature cards with icons: one list unifying three tools; isolated instances; Codex window isolation; session reply; queue persistence; restart survival; rate-limit recovery; ChatGPT handoff; quick instance mode. - `index.html:1223`
-- **MCP server and agent integration section** - Two-card layout: one for the human dashboard, one for agent access over MCP. Explains the dual interface and what agents can control (sessions, queue, scheduler, instances, quota checks). - `index.html:1275`
-- **Quota and fan-out guidance section** - Educational content on using AgentHydra to prevent agent fan-out crashes by checking quotas before spinning up parallel work. - `index.html:1324`
-- **Installation options section** - Two-card comparison: pre-built binaries (Windows .exe, Linux/macOS single executables) vs. running from source (bun checkout); links to GitHub Releases and repo. - `index.html:1355`
-- **FAQ (structured data)** - Eight FAQPage items in JSON-LD schema covering cost, tool support, Codex/OpenCode read-only limitations, privacy and opt-out, MCP capabilities, offline mode, comparison to Crystal/Conductor, and Bun dependency. - `index.html:722`
-- **Navigation header** - Sticky navbar with brand logo, nav links to anchor sections, and GitHub repo link with icon. - `index.html:797`
-- **Brand and design system** - Dark theme CSS variables (terracotta brand color #c15f3c, provider colors for Claude/Codex/OpenCode), typography scale, spacing, and interactive states; includes background gradient and theme colors. - `index.html:28`
-- **Social metadata and SEO** - Open Graph tags, Twitter card, canonical URL, JSON-LD SoftwareApplication schema with featureList, Organization, and BreadcrumbList; opt-out analytics pixel via ARGUS. - `index.html:642`, `index.html:14`
-- **Comparison to alternatives** - Dedicated section (#compare) contrasting AgentHydra against separate terminal windows, Crystal/Nimbalyst, Conductor, and ccmanager, describing each from its own public docs and how AgentHydra differs. - `index.html:1406`
-- **Agent and search crawler discovery files** - robots.txt, sitemap.xml and llms.txt ship at the site root so search engines and LLM agents can discover and summarize the product; none are mentioned in architecture or features. - `llms.txt:1`, `robots.txt:1`, `sitemap.xml:1`
+- **Hero section and product pitch** - Eyebrow tagline, headline with gradient text, lede copy, and dual CTA buttons (Download / GitHub) with live update indicator; sets the value proposition: unified session list, instance isolation, queue and scheduler. - `index.html`
+- **Product screenshot (interactive replica)** - HTML/CSS replica of the AgentHydra app UI inside a browser frame, demonstrating the session list, provider badges, details pane, queue panel, and instances table. Includes hover states and tab switching. - `index.html`
+- **Three-step setup guide** - Step-by-step card grid explaining how AgentHydra works: start the daemon, it auto-discovers sessions, then reply, queue or hand off to agents. - `index.html`
+- **Provider compatibility matrix** - Table showing which features work with which AI tools (Claude Code, Codex, OpenCode): one list, instances, messaging, queuing, scheduler, MCP, marked by checkmark or dash per provider. - `index.html`
+- **Features grid (nine capabilities)** - Nine feature cards with icons: one list unifying three tools; isolated instances; Codex window isolation; session reply; queue persistence; restart survival; rate-limit recovery; ChatGPT handoff; quick instance mode. - `index.html`
+- **MCP server and agent integration section** - Two-card layout: one for the human dashboard, one for agent access over MCP. Explains the dual interface and what agents can control (sessions, queue, scheduler, instances, quota checks). - `index.html`
+- **Quota and fan-out guidance section** - Educational content on using AgentHydra to prevent agent fan-out crashes by checking quotas before spinning up parallel work. - `index.html`
+- **Installation options section** - Two-card comparison: pre-built binaries (Windows .exe, Linux/macOS single executables) vs. running from source (bun checkout); links to GitHub Releases and repo. - `index.html`
+- **FAQ (structured data)** - Eight FAQPage items in JSON-LD schema covering cost, tool support, Codex/OpenCode read-only limitations, privacy and opt-out, MCP capabilities, offline mode, comparison to Crystal/Conductor, and Bun dependency. - `index.html`
+- **Navigation header** - Sticky navbar with brand logo, nav links to anchor sections, and GitHub repo link with icon. - `index.html`
+- **Brand and design system** - Dark theme CSS variables (terracotta brand color #c15f3c, provider colors for Claude/Codex/OpenCode), typography scale, spacing, and interactive states; includes background gradient and theme colors. - `index.html`
+- **Social metadata and SEO** - Open Graph tags, Twitter card, canonical URL, JSON-LD SoftwareApplication schema with featureList, Organization, and BreadcrumbList; opt-out analytics pixel via ARGUS. - `index.html`
+- **Comparison to alternatives** - Dedicated section (#compare) contrasting AgentHydra against separate terminal windows, Crystal/Nimbalyst, Conductor, and ccmanager, describing each from its own public docs and how AgentHydra differs. - `index.html`
+- **Agent and search crawler discovery files** - robots.txt, sitemap.xml and llms.txt ship at the site root so search engines and LLM agents can discover and summarize the product; none are mentioned in architecture or features. - `llms.txt`, `robots.txt`, `sitemap.xml`
 
 ### Where to add a new one
 
-- **new feature card in the feature grid** - add a div.card after line 1239, following the pattern: icon div, h3 title, p description anchors: `index.html:1223`
-- **new FAQ entry** - add a Question/Answer object to the FAQPage mainEntity array in the JSON-LD schema anchors: `index.html:724`
-- **new provider or tool column in the matrix** - add a new th in .ptable thead and corresponding td cells in each row anchors: `index.html:1196`
-- **navigation link to a new section** - add an anchor link in .nav-links (line 97) and a corresponding section id below anchors: `index.html:88`
+- **new feature card in the feature grid** - add a div.card after line 1239, following the pattern: icon div, h3 title, p description anchors: `index.html`
+- **new FAQ entry** - add a Question/Answer object to the FAQPage mainEntity array in the JSON-LD schema anchors: `index.html`
+- **new provider or tool column in the matrix** - add a new th in .ptable thead and corresponding td cells in each row anchors: `index.html`
+- **navigation link to a new section** - add an anchor link in .nav-links (line 97) and a corresponding section id below anchors: `index.html`
 
 ### Gaps and wants
 
@@ -84,4 +84,4 @@ _Read it with `python odin.py codex brief agenthydra-github-io` in the Odin clon
 ---
 
 _Generated by `odin codex about --publish agenthydra-github-io` on 2026-09-16 from a Codex dossier stamped 2026-09-14. Regenerate after the product moves; `odin codex about` reports drift._
-<!-- odin:about GENERATED END sha=5ec1f9a94a8f -->
+<!-- odin:about GENERATED END sha=e0638ebadc14 -->
