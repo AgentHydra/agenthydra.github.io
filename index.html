@@ -411,31 +411,36 @@
     .duo-card h3 { margin: 0 0 7px; font-size: 1.12rem; font-weight: 640; }
     .duo-card p { margin: 0; color: var(--muted); font-size: 0.96rem; }
 
-    /* ── Per-OS downloads ── */
-    /* Six tiles because there are six builds. The install section used to point at
-       /releases and leave the visitor to tell darwin-arm64 from darwin-x64 by reading
-       filenames, which is not a thing to ask of somebody who just wants the app
-       (owner, 2026-09-16). Every build is listed rather than hidden behind detection,
-       so a person who knows better than the browser can just take the right one. */
-    .os-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
-    @media (max-width: 860px){ .os-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 560px){ .os-grid { grid-template-columns: 1fr; } }
-    .os-opt {
-      display: flex; flex-direction: column; gap: 5px;
-      border: 1px solid var(--border); border-radius: 11px; padding: 14px 16px;
-      background: rgba(255,255,255,0.015); color: var(--text);
-      transition: border-color .15s, background .15s, transform .12s;
-    }
-    .os-opt:hover { border-color: var(--border-2); background: rgba(255,255,255,0.04); transform: translateY(-1px); }
-    .os-opt:active { transform: translateY(0); }
-    .os-n { display: flex; align-items: center; gap: 9px; font-size: 0.97rem; font-weight: 600; }
-    .os-n svg { flex: 0 0 auto; opacity: .8; }
-    .os-k { font-size: 0.8rem; color: var(--muted); }
-    /* Marked by the runtime script once it knows the visitor's OS and architecture.
-       When it cannot tell, nothing is marked: a highlight that guesses wrong is worse
-       than no highlight, and on this page a wrong guess is a build that will not run. */
-    .os-opt.is-you { border-color: var(--brand); background: rgba(193,95,60,0.08); }
-    .os-opt.is-you .os-k::after { content: " · your machine"; color: var(--brand-bright); }
+    /* ── Downloads: platform strip under the hero button, one tile per OS in the
+       install section, the visitor's own marked by the runtime script (owner, 2026-09-16:
+       every platform visible at a glance, no OS named twice, no paragraphs). ── */
+    .dl-platforms{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin-top:14px;font-size:.86rem;color:var(--muted)}
+    .dl-platforms .lead{color:var(--muted)}
+    .dl-platforms a{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;padding:2px 0;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
+    .dl-platforms a:hover{color:var(--text)}
+    .dl-platforms a.is-you{color:var(--text);border-bottom-color:var(--brand)}
+    .dl-platforms svg{width:13px;height:13px;flex:none;opacity:.85}
+    .os-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px;text-align:left}
+    @media(max-width:720px){.os-tiles{grid-template-columns:1fr}}
+    .os-tile{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:11px;background:rgba(255,255,255,0.015);transition:border-color .15s,background .15s}
+    .os-tile:hover{border-color:var(--border-2);background:rgba(255,255,255,0.04)}
+    .os-tile.is-you{border-color:var(--brand);background:rgba(193,95,60,0.08)}
+    .os-main{display:flex;flex-direction:column;gap:4px;padding:13px 15px 9px;color:var(--text);text-decoration:none}
+    .os-h{display:flex;align-items:center;gap:8px;font-size:.95rem;font-weight:600;color:var(--text)}
+    .os-h svg{width:15px;height:15px;flex:none;opacity:.85}
+    .os-p{font-size:.8rem;color:var(--muted)}
+    .os-tile.is-you .os-p::after{content:" · your machine";color:var(--brand)}
+    .os-alts{display:flex;flex-wrap:wrap;gap:4px 10px;padding:0 15px 12px;font-size:.76rem;color:var(--muted)}
+    .os-alts a{color:var(--muted);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border-2)}
+    .os-alts a:hover{color:var(--text);text-decoration-color:var(--text)}
+    .os-foot{margin-top:12px;font-size:.8rem;color:var(--muted)}
+    .os-foot a{color:var(--muted);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border-2)}
+    .os-foot a:hover{color:var(--text)}
+    .nav-gh.nav-gh-icon{padding:7px;gap:0}
+    .nav-dl{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:9px;background:var(--brand);color:#fff;font-weight:560;font-size:.9rem;transition:background .15s}
+    .nav-dl:hover{background:var(--brand-bright);color:#fff}
+    .foot-cta .dl-platforms{justify-content:center}
+
 
     /* ── Install notes ── */
     .notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
@@ -836,9 +841,10 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
         <a class="hide-sm" href="#features">Features</a>
         <a class="hide-sm" href="#mcp">MCP</a>
         <a class="hide-sm" href="#install">Install</a>
-        <a class="nav-gh" href="https://github.com/LunarWerxs/AgentHydra" target="_blank" rel="noopener">
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-          GitHub
+        <a class="nav-gh nav-gh-icon" href="https://github.com/LunarWerxs/AgentHydra" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+        <a class="nav-dl js-dl-primary" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows">
+          <svg class="js-dl-mark" width="14" height="14" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
+          Download
         </a>
       </div>
     </div>
@@ -850,19 +856,14 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       <h1>Every local AI coding session <span class="grad">in one tab</span></h1>
       <p class="lede">Run AI tools in more than one place and nothing shows you all of it at once. AgentHydra live-tails Claude Code, Codex and OpenCode in a single list, keeps your isolated Claude and Codex instances straight about which account is which, and queues <code>claude</code> runs to fire now or at 3am. One daemon, your browser, a tray icon.</p>
       <div class="cta">
-        <!-- Links the FILE, and the runtime script below swaps it for the visitor's own
-             OS and architecture. It used to open /releases, where six archives wait to
-             be told apart by filename. -->
         <a class="btn btn-primary js-dl-primary" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows">
-          <svg class="js-dl-icon" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
+          <svg class="js-dl-mark" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
           <span class="js-dl-label">Download for Windows</span>
         </a>
-        <a class="btn btn-ghost" href="https://github.com/LunarWerxs/AgentHydra" target="_blank" rel="noopener">
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-          View source
-        </a>
+        <a class="btn btn-ghost" href="https://github.com/LunarWerxs/AgentHydra" target="_blank" rel="noopener">View source</a>
       </div>
-      <p class="sub-note">Free &amp; open source (MIT) · Windows, macOS, Linux · no account needed to run it</p>
+      <p class="dl-platforms"><a data-tile="win" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download><svg width="13" height="13" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>Windows</a> <a data-tile="mac" data-dl="mac-arm64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-darwin-arm64.tar.gz" download><svg width="13" height="13" fill="currentColor" aria-hidden="true"><use href="#os-apple"/></svg>macOS</a> <a data-tile="linux" data-dl="linux-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-linux-x64.tar.gz" download><svg width="13" height="13" fill="currentColor" aria-hidden="true"><use href="#os-linux"/></svg>Linux</a></p>
+      <p class="sub-note">Free &amp; open source (MIT) · no account needed to run it</p>
     </div>
 
     <div class="wrap showcase">
@@ -1390,47 +1391,33 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
 
   <section id="install" class="wrap">
     <div class="sec-eyebrow code">// <b>install</b></div>
-    <h2>Two ways in</h2>
-    <div class="duo">
-      <div class="duo-card">
-        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></div>
-        <h3>Download a build</h3>
-        <p>On Windows, run the versioned <code>.exe</code> below. It carries its own icon, embeds the web app, and opens no console window. The ZIP next to it is the smaller transport the updater uses. Linux and macOS builds are one-executable archives. No Bun, no sidecar folders.</p>
+    <h2>Install</h2>
+    <div class="os-tiles">
+      <div class="os-tile" data-tile="win">
+        <a class="os-main" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows, the single .exe">
+          <span class="os-h"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>Windows</span>
+          <span class="os-p">.exe · one file</span>
+        </a>
+        <span class="os-alts">also <a data-dl="win-x64-zip" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.zip" download>.zip</a></span>
       </div>
-      <div class="duo-card">
-        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg></div>
-        <h3>Or run from source</h3>
-        <p>With <a href="https://bun.sh" target="_blank" rel="noopener" style="color:var(--brand-bright)">Bun</a> on the machine, it is a clone, <code>bun install</code>, <code>bun run build</code> and <code>bun run start</code>. Either way the dashboard is at <code>http://localhost:7787</code>, bound to loopback only.</p>
+      <div class="os-tile" data-tile="mac">
+        <a class="os-main" data-dl="mac-arm64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-darwin-arm64.tar.gz" download aria-label="Download AgentHydra for macOS on Apple silicon">
+          <span class="os-h"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-apple"/></svg>macOS</span>
+          <span class="os-p">Apple silicon</span>
+        </a>
+        <span class="os-alts">also <a data-dl="mac-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-darwin-x64.tar.gz" download>Intel</a></span>
+      </div>
+      <div class="os-tile" data-tile="linux">
+        <a class="os-main" data-dl="linux-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-linux-x64.tar.gz" download aria-label="Download AgentHydra for Linux x64">
+          <span class="os-h"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-linux"/></svg>Linux</span>
+          <span class="os-p">x64</span>
+        </a>
+        <span class="os-alts">also <a data-dl="linux-arm64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-linux-arm64.tar.gz" download>ARM64</a></span>
       </div>
     </div>
+    <p class="os-foot"><span class="js-app-version">v0.42.0</span> · <a href="https://github.com/LunarWerxs/AgentHydra/releases" target="_blank" rel="noopener">all releases</a></p>
+    <p class="sub-note" style="margin-top:16px">Or from source, with <a href="https://bun.sh" target="_blank" rel="noopener" style="color:var(--brand-bright)">Bun</a>: <code>bun install &amp;&amp; bun run build &amp;&amp; bun run start</code>. Either way the dashboard is at <code>http://localhost:7787</code>, loopback only.</p>
 
-    <div class="os-grid">
-      <a class="os-opt" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows x64, the single .exe">
-        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>Windows</span>
-        <span class="os-k">x64 · .exe</span>
-      </a>
-      <a class="os-opt" data-dl="mac-arm64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-darwin-arm64.tar.gz" download aria-label="Download AgentHydra for macOS on Apple silicon">
-        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-apple"/></svg>macOS</span>
-        <span class="os-k">Apple silicon · .tar.gz</span>
-      </a>
-      <a class="os-opt" data-dl="linux-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-linux-x64.tar.gz" download aria-label="Download AgentHydra for Linux x64">
-        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-linux"/></svg>Linux</span>
-        <span class="os-k">x64 · .tar.gz</span>
-      </a>
-      <a class="os-opt" data-dl="win-x64-zip" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.zip" download aria-label="Download AgentHydra for Windows x64 as a zip">
-        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>Windows</span>
-        <span class="os-k">x64 · .zip</span>
-      </a>
-      <a class="os-opt" data-dl="mac-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-darwin-x64.tar.gz" download aria-label="Download AgentHydra for macOS on Intel">
-        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-apple"/></svg>macOS</span>
-        <span class="os-k">Intel · .tar.gz</span>
-      </a>
-      <a class="os-opt" data-dl="linux-arm64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-linux-arm64.tar.gz" download aria-label="Download AgentHydra for Linux ARM64">
-        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-linux"/></svg>Linux</span>
-        <span class="os-k">ARM64 · .tar.gz</span>
-      </a>
-    </div>
-    <p class="sub-note" style="margin-top:14px"><span class="js-app-version">v0.42.0</span> · free and open source (MIT) · no account needed to run it</p>
 
     <div class="notes">
       <div class="note-item">
@@ -1495,9 +1482,10 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
     <h2>Stop alt-tabbing to remember what is running</h2>
     <p>One daemon. Every Claude, Codex and OpenCode session in one list, every isolated instance in one table, and an MCP door for your agents.</p>
     <a class="btn btn-primary js-dl-primary" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows">
-      <svg class="js-dl-icon" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
+      <svg class="js-dl-mark" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
       <span class="js-dl-label">Download for Windows</span>
     </a>
+    <p class="dl-platforms"><a data-tile="win" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download><svg width="13" height="13" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>Windows</a> <a data-tile="mac" data-dl="mac-arm64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-darwin-arm64.tar.gz" download><svg width="13" height="13" fill="currentColor" aria-hidden="true"><use href="#os-apple"/></svg>macOS</a> <a data-tile="linux" data-dl="linux-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-linux-x64.tar.gz" download><svg width="13" height="13" fill="currentColor" aria-hidden="true"><use href="#os-linux"/></svg>Linux</a></p>
   </section>
 
   <section id="faq" class="wrap">
@@ -1849,103 +1837,98 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
 </script>
 <!-- /LunarWerx Discord badge -->
 <script>
-/* Keeps the download links, the version label and the JSON-LD current without a
- * redeploy, and points the big buttons at the visitor's own machine.
- *
- * Every Download on this page used to open /releases, where six archives wait to be
- * told apart by filename -- and this is the product with the most of them, including
- * two Macs and two Linuxes (owner, 2026-09-16). They link the file now.
- *
- * A direct asset URL is version-pinned, so it would 404 the day a release ships. Two
- * things stop that: scripts/sync-version.mjs rewrites the baked-in URLs on a schedule
- * and refuses to write one whose asset the release does not carry, and this script
- * repairs the gap between a release and that job running. With JS off, the baked-in
- * URLs still download a real build. */
+/* Download links, version label and JSON-LD, kept current without a redeploy; the
+   big buttons follow the visitor's machine; the platform strip and the install tiles
+   mark it. The static hrefs are already direct file URLs (scripts/sync-version.mjs
+   rewrites them on every release and refuses to write one the release does not
+   carry); this repairs the gap between a release and that job. With JS off the
+   baked-in URLs still download a real build. */
 (function(){
   var REPO = "https://github.com/LunarWerxs/AgentHydra";
-
-  /* Every asset a release carries, keyed by the data-dl value the markup uses. These
-     filenames carry the version, so the name is rebuilt per release rather than fixed. */
+  var DEFAULT_KEY = "win-x64";
+  var MODE = "os";   // "os": Windows/macOS/Linux; "winarch": one OS, x64 vs ARM64
   function files(v){ return {
-    "win-x64"    : "AgentHydra-" + v + "-windows-x64.exe",
-    "win-x64-zip": "AgentHydra-" + v + "-windows-x64.zip",
-    "mac-arm64"  : "AgentHydra-" + v + "-darwin-arm64.tar.gz",
-    "mac-x64"    : "AgentHydra-" + v + "-darwin-x64.tar.gz",
-    "linux-x64"  : "AgentHydra-" + v + "-linux-x64.tar.gz",
-    "linux-arm64": "AgentHydra-" + v + "-linux-arm64.tar.gz"
+      "win-x64": "AgentHydra-" + v + "-windows-x64.exe",
+      "win-x64-zip": "AgentHydra-" + v + "-windows-x64.zip",
+      "mac-arm64": "AgentHydra-" + v + "-darwin-arm64.tar.gz",
+      "mac-x64": "AgentHydra-" + v + "-darwin-x64.tar.gz",
+      "linux-x64": "AgentHydra-" + v + "-linux-x64.tar.gz",
+      "linux-arm64": "AgentHydra-" + v + "-linux-arm64.tar.gz"
   }; }
   var LABEL = {
-    "win-x64"    : ["Download for Windows",         "win"],
-    "win-x64-zip": ["Download for Windows",         "win"],
-    "mac-arm64"  : ["Download for macOS",           "apple"],
-    "mac-x64"    : ["Download for macOS (Intel)",   "apple"],
-    "linux-x64"  : ["Download for Linux",           "linux"],
-    "linux-arm64": ["Download for Linux (ARM64)",   "linux"]
+      "win-x64": { text: "Download for Windows", mark: "win", aria: "Windows" },
+      "win-x64-zip": { text: "Download for Windows", mark: "win", aria: "Windows" },
+      "mac-arm64": { text: "Download for macOS", mark: "apple", aria: "macOS (Apple silicon)" },
+      "mac-x64": { text: "Download for macOS (Intel)", mark: "apple", aria: "macOS (Intel)" },
+      "linux-x64": { text: "Download for Linux", mark: "linux", aria: "Linux (x64)" },
+      "linux-arm64": { text: "Download for Linux (ARM64)", mark: "linux", aria: "Linux (ARM64)" }
+  };
+  /* tile -> which asset key to hand over; arm/x86 refine it where a build exists. */
+  var PICK = {
+      "win": { def: "win-x64" },
+      "mac": { def: "mac-arm64", x86: "mac-x64" },
+      "linux": { def: "linux-x64", arm: "linux-arm64" }
   };
 
-  var state = { version: null, pick: null, urls: {} };
-
-  /* The version already on the page, read off a download href rather than a separate
-     data attribute: the href is the thing that has to be right. */
-  (function(){
+  var state = { version: null, tile: null, key: null, urls: {} };
+  (function(){   // the version already on the page, read off a download href
     var a = document.querySelector("a[data-dl]");
     var m = a && (a.getAttribute("href") || "").match(/\/download\/v(\d+\.\d+\.\d+[^\/]*)\//);
     if (m) state.version = m[1];
   })();
 
-  /* Android reports Linux and iPadOS reports Mac, and there is no build for either, so
-     both fall through to null and the baked-in Windows default stands; ChromeOS too.
-     Architecture is only knowable through client hints -- Safari has none, so an
-     undetected Mac gets Apple silicon, which is every Mac sold since 2020. */
-  function detectOS(){
+  /* Android says Linux and iPadOS says Mac, and there is no build for either, so
+     both leave the tile null and the default stands; ChromeOS too. */
+  function detectTile(){
     var ua = navigator.userAgent || "";
     var p  = (navigator.userAgentData && navigator.userAgentData.platform) || "";
     if (/Android|iPhone|iPad|iPod|CrOS/i.test(ua)) return null;
+    var win = /win/i.test(p) || /Windows/i.test(ua);
+    if (MODE === "winarch") return win ? (/\b(?:ARM64|aarch64)\b/i.test(ua) ? "arm64" : "x64") : null;
     if (/mac/i.test(p)   || /Mac OS X|Macintosh/i.test(ua)) return "mac";
     if (/linux/i.test(p) || /Linux/i.test(ua))              return "linux";
-    if (/win/i.test(p)   || /Windows/i.test(ua))            return "win";
-    return null;
+    return win ? "win" : null;
   }
-  function pickFor(os, arm){
-    if (os === "mac")   return arm === false ? "mac-x64"     : "mac-arm64";
-    if (os === "linux") return arm === true  ? "linux-arm64" : "linux-x64";
-    if (os === "win")   return "win-x64";   // no ARM64 Windows build is published
-    return null;
+  function pick(tile, arm){
+    var p = PICK[tile]; if (!p) return null;
+    if (arm === true  && p.arm) return p.arm;
+    if (arm === false && p.x86) return p.x86;
+    return p.def;
   }
-
   function urlFor(key){
-    if (state.urls[key]) return state.urls[key];        // the release said so
-    if (!state.version) return null;                    // leave the baked-in href alone
+    if (state.urls[key]) return state.urls[key];              // the release said so
+    if (!state.version) return null;                          // leave the baked-in href alone
     var f = files(state.version)[key];
     return f ? REPO + "/releases/download/v" + state.version + "/" + f : null;
   }
+  function all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); }
 
-  /* Idempotent: safe to call again as detection and the release fetch land. */
+  /* Idempotent: runs on load, again when client hints answer, again when the API does. */
   function render(){
-    var primary = state.pick || "win-x64";
-    document.querySelectorAll("a.js-dl-primary").forEach(function(a){ a.setAttribute("data-dl", primary); });
-    document.querySelectorAll("a[data-dl]").forEach(function(a){
-      var href = urlFor(a.getAttribute("data-dl"));
-      if (href) a.setAttribute("href", href);
+    var key = state.key || DEFAULT_KEY, L = LABEL[key] || LABEL[DEFAULT_KEY];
+    all("a.js-dl-primary").forEach(function(a){
+      a.setAttribute("data-dl", key);
+      a.setAttribute("aria-label", "Download AgentHydra for " + L.aria);
     });
-    document.querySelectorAll(".js-dl-label").forEach(function(el){ el.textContent = LABEL[primary][0]; });
-    document.querySelectorAll(".js-dl-icon use").forEach(function(u){ u.setAttribute("href", "#os-" + LABEL[primary][1]); });
-    document.querySelectorAll("a.js-dl-primary").forEach(function(a){
-      a.setAttribute("aria-label", LABEL[primary][0].replace("Download", "Download AgentHydra"));
-    });
-    document.querySelectorAll(".os-grid a[data-dl]").forEach(function(a){
-      a.classList.toggle("is-you", state.pick !== null && a.getAttribute("data-dl") === state.pick);
+    all(".js-dl-label").forEach(function(el){ el.textContent = L.text; });
+    all(".js-dl-arch").forEach(function(el){ if (L.sub) el.textContent = L.sub; });
+    all(".js-dl-mark use").forEach(function(u){ u.setAttribute("href", "#os-" + L.mark); });
+    all("a[data-dl]").forEach(function(a){ var h = urlFor(a.getAttribute("data-dl")); if (h) a.setAttribute("href", h); });
+    all("[data-tile]").forEach(function(el){
+      el.classList.toggle("is-you", state.tile !== null && el.getAttribute("data-tile") === state.tile);
     });
   }
 
   try {
-    var os = detectOS();
-    state.pick = pickFor(os, null);
+    state.tile = detectTile();
+    state.key  = pick(state.tile, null);
     render();
     var uad = navigator.userAgentData;
-    if (os && uad && typeof uad.getHighEntropyValues === "function") {
+    if (state.tile && uad && typeof uad.getHighEntropyValues === "function") {
       uad.getHighEntropyValues(["architecture"]).then(function(h){
-        state.pick = pickFor(os, /arm/i.test((h && h.architecture) || ""));
+        var arm = /arm/i.test((h && h.architecture) || "");
+        if (MODE === "winarch") { state.tile = arm ? "arm64" : "x64"; }
+        state.key = pick(state.tile, arm);
         render();
       }).catch(function(){});
     }
@@ -1956,22 +1939,18 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
         var bare = String(rel.tag_name).trim().replace(/^v/, "");
         if (!/^\d+\.\d+\.\d+/.test(bare)) return;   // never write a draft name into the page
         state.version = bare;
-        /* Prefer the URL the release itself reports over one rebuilt from a filename:
-           a renamed asset is then still found instead of 404ing. */
-        var want = files(bare);
+        var want = files(bare);   // prefer the URL the release reports over a rebuilt filename
         (rel.assets || []).forEach(function(asset){
-          Object.keys(want).forEach(function(key){
-            if (want[key] === asset.name && asset.browser_download_url) state.urls[key] = asset.browser_download_url;
-          });
+          Object.keys(want).forEach(function(k){ if (want[k] === asset.name && asset.browser_download_url) state.urls[k] = asset.browser_download_url; });
         });
         render();
-        document.querySelectorAll(".js-app-version").forEach(function(el){ el.textContent = "v" + bare; });
-        document.querySelectorAll('script[type="application/ld+json"]').forEach(function(s){
+        all(".js-app-version").forEach(function(el){ el.textContent = "v" + bare; });
+        all('script[type="application/ld+json"]').forEach(function(s){
           try {
             var data = JSON.parse(s.textContent), changed = false;
             (function walk(o){ if (o && typeof o === "object") { Object.keys(o).forEach(function(k){
               if (k === "softwareVersion") { o[k] = bare; changed = true; }
-              else if (k === "downloadUrl" && urlFor("win-x64")) { o[k] = urlFor("win-x64"); changed = true; }
+              else if (k === "downloadUrl" && urlFor(DEFAULT_KEY)) { o[k] = urlFor(DEFAULT_KEY); changed = true; }
               else { walk(o[k]); } }); } })(data);
             if (changed) s.textContent = JSON.stringify(data);
           } catch (e) {}
