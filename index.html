@@ -867,7 +867,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
     <div class="wrap hero-inner">
       <span class="eyebrow"><span class="pulse"></span> Claude, Codex and OpenCode, on one localhost</span>
       <h1>Every local AI coding session <span class="grad">in one tab</span></h1>
-      <p class="lede">Run AI tools in more than one place and nothing shows you all of it at once. AgentHydra live-tails Claude Code, Codex and OpenCode in a single list, keeps your isolated Claude and Codex instances straight about which account is which, and queues <code>claude</code> runs to fire now or at 3am. One daemon, your browser, a tray icon.</p>
+      <p class="lede">Live-tails Claude Code, Codex and OpenCode in one list, keeps your isolated instances straight about which account is which, and queues <code>claude</code> runs for now or 3am. One daemon, your browser, a tray icon.</p>
       <div class="cta">
         <a class="btn btn-primary js-dl-primary" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows">
           <svg class="js-dl-mark" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
@@ -1217,11 +1217,11 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
   <section id="how" class="wrap">
     <div class="sec-eyebrow code">// <b>how it works</b></div>
     <h2>One daemon, reading what your tools already wrote</h2>
-    <p class="sec-lede">AgentHydra does not sit between you and Claude, and it is not another client to sign into. It reads the local stores your tools write anyway, and gives them a window.</p>
+    <p class="sec-lede">Not another client to sign into. It reads the local stores your tools already write, and gives them a window.</p>
     <div class="steps">
-      <div class="step"><span class="num n1">1</span><h3>Start the daemon</h3><p>Run the tray app, or <code>bun run start</code> from a checkout. It serves the dashboard, opens your browser at <code>localhost:7787</code>, and leaves no console window behind.</p></div>
-      <div class="step"><span class="num n2">2</span><h3>It finds what is already there</h3><p>It scans your Claude transcripts, Codex rollout files, the OpenCode database and every isolated instance on the machine. Nothing to import and nothing to configure.</p></div>
-      <div class="step"><span class="num n3">3</span><h3>Reply, queue, or hand it over</h3><p>Type back into a Claude session, build a queue of <code>claude</code> runs for later, or let your agents drive the same state over MCP.</p></div>
+      <div class="step"><span class="num n1">1</span><h3>Start the daemon</h3><p>Run the tray app, or <code>bun run start</code>. It opens your browser at <code>localhost:7787</code> and leaves no console window behind.</p></div>
+      <div class="step"><span class="num n2">2</span><h3>It finds what is already there</h3><p>It scans your Claude transcripts, Codex rollout files, the OpenCode database and every isolated instance. Nothing to import or configure.</p></div>
+      <div class="step"><span class="num n3">3</span><h3>Reply, queue, or hand it over</h3><p>Type back into a Claude session, queue <code>claude</code> runs for later, or let your agents drive the same state over MCP.</p></div>
     </div>
 
     <div class="term" role="img" aria-label="Terminal showing bun run start booting the AgentHydra daemon. It reads Claude, Codex and OpenCode session stores, finds four Claude Desktop instances and two Codex instances, leaves the scheduler and auto-resume monitor off, and serves the dashboard on localhost port 7787.">
@@ -1246,7 +1246,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
   <section id="providers" class="wrap">
     <div class="sec-eyebrow code">// <b>what it reads, and what it can drive</b></div>
     <h2>Three tools, and an honest line between them</h2>
-    <p class="sec-lede">Every provider's history shows up in the same list. Only Claude takes instructions back, because only Claude ships a CLI that can be handed a prompt. Open a Codex or OpenCode session and the reply box is not there, rather than a send button that quietly does nothing.</p>
+    <p class="sec-lede">Every provider's history lands in the same list, but only Claude takes instructions back, because only Claude ships a CLI you can hand a prompt. Codex and OpenCode sessions open without a reply box, rather than a send button that quietly does nothing.</p>
     <div class="ptable-wrap">
       <table class="ptable">
         <thead>
@@ -1265,7 +1265,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       </table>
     </div>
     <p class="ptable-hint">Scroll the table sideways for Codex and OpenCode.</p>
-    <p class="sub-note" style="text-align:left;margin-top:14px">Codex is read from its rollout JSONL files. OpenCode CLI and Desktop share one local SQLite store, so both turn up without a second setting. A provider you do not have simply never appears.</p>
+    <p class="sub-note" style="text-align:left;margin-top:14px">Codex comes from its rollout JSONL files; OpenCode CLI and Desktop share one SQLite store, so both turn up without a second setting. A provider you do not have never appears.</p>
   </section>
 
   <hr class="divider wrap" />
@@ -1277,47 +1277,47 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       <div class="card">
         <div class="ico c2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg></div>
         <h3>One list, three tools</h3>
-        <p>Claude, Codex and OpenCode conversations sit together, newest first, with a badge saying which wrote which. Filter by provider, project, recency or Desktop instance. Click one to read it and watch it stream while it runs.</p>
+        <p>Every conversation together, newest first, badged by tool. Filter by provider, project, recency or instance; click one and watch it stream.</p>
       </div>
       <div class="card">
         <div class="ico c1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg></div>
         <h3>Isolated Claude instances</h3>
-        <p>Every separate Claude Desktop profile on the machine, showing which account it is signed into, its plan, and, while it runs, its process, memory and uptime. Open, focus, quit, create and delete from the row. Give each one a name, an icon and a colour so they stop looking identical.</p>
+        <p>Every Claude Desktop profile with its account, plan and live process, memory and uptime. Open, focus, quit, create and delete from the row, and give each a name, icon and colour so they stop looking identical.</p>
       </div>
       <div class="card">
         <div class="ico c4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m7 10 2.5 2L7 14"/><path d="M13 14h4"/></svg></div>
         <h3>Codex gets its own windows</h3>
-        <p>Each Codex instance gets its own <code>CODEX_HOME</code> and desktop profile, so a work OpenAI login and a personal one run in separate Codex windows at the same time. The CLI Launch and Log in actions use that same isolated login.</p>
+        <p>Each Codex instance gets its own <code>CODEX_HOME</code> and profile, so a work and a personal OpenAI login run in separate windows at once. CLI Launch and Log in use that same isolated login.</p>
       </div>
       <div class="card">
         <div class="ico c3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>
         <h3>A composer that reaches the session</h3>
-        <p>Type at the bottom of a Claude transcript and it goes to that session, without you finding its terminal. Send now, drop it in the queue, or set it for later. Select several sessions and the same message reaches all of them.</p>
+        <p>Type at the bottom of a transcript and it reaches that session, no terminal hunting. Send now, queue it, or schedule it &mdash; and select several sessions to reach them all at once.</p>
       </div>
       <div class="card">
         <div class="ico c5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></div>
         <h3>A queue you can walk away from</h3>
-        <p>Each run carries its own prompt, working directory, model, effort, permission mode and account. Run one by hand, or let the scheduler drain the list with limits on how many go at once and how far apart. Anything queued can be given a start time, so "do this at 3am" is a checkbox rather than a cron job you maintain.</p>
+        <p>Each run carries its own prompt, directory, model, effort, permission mode and account. Run one by hand or let the scheduler drain the list, rate-limited. Anything queued takes a start time, so "do this at 3am" is a checkbox, not a cron job.</p>
       </div>
       <div class="card">
         <div class="ico c6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
         <h3>Runs that survive a restart</h3>
-        <p>Dispatched runs sit under a detached supervisor. Quitting the app, or letting it update itself, does not kill what is in flight. It picks the runs back up.</p>
+        <p>Dispatched runs sit under a detached supervisor, so quitting the app &mdash; or letting it update itself &mdash; does not kill what is in flight.</p>
       </div>
       <div class="card">
         <div class="ico c1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6.36 6.36 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></div>
         <h3>A rate limit is not a dead end</h3>
-        <p>Sessions stopped by a 5-hour limit can pick themselves back up once the window resets, including ones you started yourself in a terminal. It is gated on your weekly usage so it does not spend everything the moment it can, and it stays off until you turn it on.</p>
+        <p>Sessions stopped by a 5-hour limit resume when the window resets, including ones you started in a terminal. Gated on weekly usage so it does not spend everything at once, and off until you turn it on.</p>
       </div>
       <div class="card">
         <div class="ico c2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></div>
         <h3>Handing a task to ChatGPT</h3>
-        <p>The composer can turn the current task and repository into a bounded Markdown context file, copy a ready-to-paste prompt, and open ChatGPT. Common secret files and likely credentials are left out. You still read the attachment and press submit yourself.</p>
+        <p>Turns the current task and repo into a bounded Markdown context file, copies a prompt and opens ChatGPT, leaving out common secret files and likely credentials. You still read the attachment and submit it yourself.</p>
       </div>
       <div class="card">
         <div class="ico c3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-3 8h6l-3 12"/></svg></div>
         <h3>Quick instance mode</h3>
-        <p>When you only want to start an instance, <code>AgentHydra.exe --instances</code> skips the session scanner, the database, queue recovery, the scheduler, the monitor, usage refresh, settings sync and the updater. You get a small window with start, focus and stop for Claude Desktop, Claude CLI and Codex. It runs on its own port, so the full manager can still open later.</p>
+        <p><code>AgentHydra.exe --instances</code> skips the scanner, database, queue, scheduler, monitor and updater for a small start/focus/stop window over Claude Desktop, Claude CLI and Codex. Its own port, so the full manager still opens later.</p>
       </div>
     </div>
   </section>
@@ -1329,12 +1329,12 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       <div class="duo-card">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
         <h3>You get a dashboard</h3>
-        <p>Click through your sessions, instances, queue and accounts in your regular browser. Message a session, schedule a run, watch it stream back, with no terminal juggling.</p>
+        <p>Sessions, instances, queue and accounts in your regular browser. Message a session, schedule a run, watch it stream back.</p>
       </div>
       <div class="duo-card agent">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M12 8V4"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/><path d="M2 13v2M22 13v2"/></svg></div>
         <h3>Your agents get MCP</h3>
-        <p>The whole API is on MCP stdio, so Claude Code, Claude Desktop or Cursor can drive the exact state you click: sessions, the run queue, the scheduler, the auto-resume monitor, accounts, quota, and the Claude, CLI and Codex instance managers.</p>
+        <p>The whole API is on MCP stdio, so Claude Code, Claude Desktop or Cursor drive the exact state you click: sessions, queue, scheduler, auto-resume monitor, accounts, quota and every instance manager.</p>
       </div>
     </div>
 
@@ -1346,7 +1346,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       <div class="tool" style="color:#7fb4d8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m7 10 2.5 2L7 14"/><path d="M13 14h4"/></svg><span class="tn">codex</span><span class="td">list_codex_instances<br />create_codex_instance<br />launch_codex_instance</span></div>
       <div class="tool" style="color:#e0685c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="10"/></svg><span class="tn">usage</span><span class="td">check_usage<br />check_my_usage<br />usage_budget</span></div>
     </div>
-    <p class="sub-note" style="text-align:left;margin-top:14px">That is a sample. The full list also covers CLI instances, accounts and the updater, and it is the same API the dashboard itself calls.</p>
+    <p class="sub-note" style="text-align:left;margin-top:14px">A sample; the full list also covers CLI instances, accounts and the updater. Same API the dashboard calls.</p>
 
     <div class="code-window">
       <div class="code-bar">
@@ -1374,7 +1374,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
   <section class="wrap">
     <div class="sec-eyebrow code">// <b>check_usage</b></div>
     <h2>Agents that know when to stop</h2>
-    <p class="sec-lede">Any MCP-speaking agent can read an account's remaining quota before it starts a heavy fan-out, with no human in the loop. Reading it costs nothing, and the repo ships a short doc telling an agent how to use the number it gets back.</p>
+    <p class="sec-lede">Any MCP-speaking agent can read an account's remaining quota before a heavy fan-out, with no human in the loop. Reading costs nothing, and the repo ships a short doc on what to do with the answer.</p>
     <div class="quota">
       <div class="meters" role="img" aria-label="Quota meters: session 5-hour window at 12 percent, weekly across all models at 63 percent which is the binding cap, and weekly Opus at 41 percent.">
         <div class="mhead"><span class="dotg"></span> check_usage → work@acme.com</div>
@@ -1394,8 +1394,8 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       </div>
       <div>
         <h3 style="margin:0 0 10px;font-size:1.12rem;font-weight:640">Pace the fan-out, don't crash into the wall</h3>
-        <p style="margin:0 0 14px;color:var(--muted);font-size:0.96rem">Switching the flagship model doesn't dodge the shared weekly bucket, so an agent that checks first can route heavy work to whichever account has the most left.</p>
-        <p style="margin:0;color:var(--muted);font-size:0.96rem">And when a session <em>does</em> hit the 5-hour wall, the auto-resume monitor picks it back up once the window resets, including runs you started yourself in a terminal.</p>
+        <p style="margin:0 0 14px;color:var(--muted);font-size:0.96rem">Switching model doesn't dodge the shared weekly bucket, so an agent that checks first routes heavy work to whichever account has the most left.</p>
+        <p style="margin:0;color:var(--muted);font-size:0.96rem">And when a session <em>does</em> hit the 5-hour wall, auto-resume picks it back up once the window resets.</p>
       </div>
     </div>
   </section>
@@ -1435,15 +1435,15 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
     <div class="notes">
       <div class="note-item">
         <span class="nk">Trying it out</span>
-        <p>Set <code>AGENTHYDRA_FAKE=1</code> and dispatch uses a harmless stand-in for the <code>claude</code> CLI, so nothing touches your quota or your repos. The scheduler is off until you turn it on. Instance actions still act on real instances, and deleting one asks you to type its name.</p>
+        <p>Set <code>AGENTHYDRA_FAKE=1</code> and dispatch uses a stand-in for the <code>claude</code> CLI, so nothing touches your quota or repos. The scheduler stays off until you turn it on. Instance actions are real, and deleting one asks you to type its name.</p>
       </div>
       <div class="note-item">
         <span class="nk">What you need</span>
-        <p>The <code>claude</code> CLI for dispatch, Claude Desktop for Claude instance management. Codex and OpenCode are optional: their sessions turn up on their own once their normal local stores exist.</p>
+        <p>The <code>claude</code> CLI for dispatch, Claude Desktop for instance management. Codex and OpenCode are optional; their sessions appear once their normal local stores exist.</p>
       </div>
       <div class="note-item warn">
         <span class="nk">Where it is rough</span>
-        <p>The tray launcher is Windows only. macOS and Linux builds exist, and the instance-account code is written for them, but they are not verified there yet. Windows instance management also needs the classic Claude Desktop installer, because the newer MSIX package cannot be launched with an isolated profile. The Instances tab spots this and links the right one.</p>
+        <p>The tray launcher is Windows only; macOS and Linux builds exist but are not verified yet. Windows instance management needs the classic Claude Desktop installer, since MSIX cannot launch with an isolated profile &mdash; the Instances tab spots that and links the right one.</p>
       </div>
     </div>
   </section>
@@ -1451,7 +1451,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
   <section class="wrap">
     <div class="band">
       <span class="tag">Local &amp; private</span>
-      <p><strong>Local by default, with one automatic exception:</strong> one daemon on loopback, your regular browser, and a tray icon. There is no cloud service behind this and no account to sign up for. It reads the local stores your tools already write and talks to <code>localhost</code>. A periodic update check against <code>studio.connections.icu</code> does send the app version, a coarse OS tag, and a random per-install id; the server derives a coarse location, your network's ASN, locale, and a truncated user agent from that, but never an IP address, hostname, username, file path, account, or email. Set <code>AGENTHYDRA_NO_PING=1</code> to opt out. The other exception is the ChatGPT handoff, which opens the provider and leaves the final upload to you. Open source under MIT.</p>
+      <p><strong>Local by default, with one automatic exception:</strong> one daemon on loopback, your browser, a tray icon. No cloud service, no account. A periodic update check against <code>studio.connections.icu</code> sends the app version, a coarse OS tag and a random per-install id; the server derives coarse location, ASN, locale and a truncated user agent &mdash; never an IP, hostname, username, file path, account or email. <code>AGENTHYDRA_NO_PING=1</code> opts out. The other exception is the ChatGPT handoff, which opens the provider and leaves the upload to you. MIT.</p>
     </div>
   </section>
 
@@ -1470,23 +1470,22 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
   <section id="compare" class="wrap">
     <div class="sec-eyebrow code">// <b>how it compares</b></div>
     <h2>What people weigh AgentHydra against</h2>
-    <p class="sec-lede">AgentHydra is not the only way to keep several AI coding sessions straight. Here is how it differs from the alternatives people usually reach for first, described from each tool's own public docs.</p>
     <div class="grid">
       <div class="card">
         <h3>Separate terminal windows</h3>
-        <p>The default: one terminal per session, switched with alt-tab, and history that lives wherever each CLI happened to write it. AgentHydra's whole reason to exist is putting that history and those instances in one list instead.</p>
+        <p>One terminal per session, alt-tabbed, with history wherever each CLI happened to write it. Putting that in one list is AgentHydra's whole reason to exist.</p>
       </div>
       <div class="card">
         <h3>Crystal (now Nimbalyst)</h3>
-        <p>An Electron desktop app that runs multiple coding-agent sessions in parallel, each in its own git worktree, so you can test and compare approaches side by side. It covers Claude Code and Codex, with OpenCode and Copilot in alpha. AgentHydra doesn't spin up new worktrees or sessions at all; it reads the sessions you already have.</p>
+        <p>Runs parallel coding-agent sessions, each in its own git worktree, to compare approaches side by side. AgentHydra spins up no worktrees and no sessions &mdash; it reads the ones you already have.</p>
       </div>
       <div class="card">
         <h3>Conductor</h3>
-        <p>A Mac app from Melty Labs for running a team of parallel Claude Code, Codex, Cursor and OpenCode agents, each in an isolated git worktree, with your own subscription paying for the compute. AgentHydra runs on Windows, macOS and Linux and is a dashboard over your existing sessions rather than a worktree launcher.</p>
+        <p>A Mac app running a team of parallel agents, each in an isolated git worktree, on your own subscription. AgentHydra runs on Windows, macOS and Linux, and is a dashboard over existing sessions rather than a worktree launcher.</p>
       </div>
       <div class="card">
         <h3>ccmanager</h3>
-        <p>A tmux-free terminal UI, distributed as an npm package, for managing Claude Code, Codex, Gemini and other CLI sessions across git worktrees. AgentHydra is a browser dashboard plus an MCP server instead of a TUI, and it also handles instance identity, a run queue and scheduler, and quota checks.</p>
+        <p>A tmux-free terminal UI for CLI sessions across git worktrees. AgentHydra is a browser dashboard plus an MCP server instead of a TUI, and adds instance identity, a queue and scheduler, and quota checks.</p>
       </div>
     </div>
   </section>
