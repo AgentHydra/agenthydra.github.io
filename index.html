@@ -595,7 +595,20 @@
       html { scroll-behavior: auto; }
       .pulse, .caret { animation: none; }
     }
-  </style>
+      /* FAQ, collapsed. Eight expanded answers were a third of this page's words and all
+       of them below the fold; a summary row per question keeps the coverage (and the
+       FAQPage rich result) without the wall. Same pattern as RepoYeti and SageThumbs.
+       Every answer is also in the FAQPage JSON-LD, so nothing is lost by collapsing. */
+    .faq-list{display:grid;gap:9px;max-width:840px}
+    .faq-item{background:var(--surface);border:1px solid var(--border);border-radius:11px}
+    .faq-item>summary{cursor:pointer;list-style:none;padding:14px 16px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:12px;transition:color .15s}
+    .faq-item>summary::-webkit-details-marker{display:none}
+    .faq-item>summary::after{content:"+";margin-left:auto;font-size:17px;line-height:1;color:var(--muted)}
+    .faq-item[open]>summary::after{content:"\2212"}
+    .faq-item>summary:hover{color:var(--brand-bright)}
+    .faq-item>summary:focus-visible{outline:2px solid var(--brand-bright);outline-offset:-2px;border-radius:11px}
+    .faq-a{padding:0 16px 15px;margin:0;color:var(--muted);line-height:1.6;max-width:72ch}
+</style>
 <style>
 /* Back to the parent studio: a bare arrow at the top left of the page.
    Deliberately not in the header and deliberately unstyled beyond a hover
@@ -1491,39 +1504,39 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
   <section id="faq" class="wrap">
     <div class="sec-eyebrow code">// <b>faq</b></div>
     <h2>Questions people actually ask</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Is AgentHydra free?</h3>
-        <p>Yes. AgentHydra is free and open source under the MIT license, and no account is needed to run it. There's no cloud service behind it and nothing to sign up for: it reads the local Claude, Codex and OpenCode stores already on your machine and serves a dashboard on localhost.</p>
-      </div>
-      <div class="card">
-        <h3>What AI coding tools does AgentHydra support?</h3>
-        <p>AgentHydra reads and lists sessions from Claude Code, Codex and OpenCode side by side, newest first, each badged with the tool that wrote it. Claude Code sessions come from your transcripts, Codex from its rollout JSONL files, and OpenCode CLI and Desktop share one local SQLite store, so both show up automatically.</p>
-      </div>
-      <div class="card">
-        <h3>Can I reply to a Codex or OpenCode session from AgentHydra?</h3>
-        <p>No, only Claude sessions can be messaged back. AgentHydra can read and live-tail Codex and OpenCode conversations just like Claude's, but only Claude ships a CLI that can be handed a prompt, so Codex and OpenCode sessions open without a reply box instead of a send button that quietly does nothing.</p>
-      </div>
-      <div class="card">
-        <h3>Is AgentHydra private, or does it send my data anywhere?</h3>
-        <p>Not entirely. The one thing that leaves your machine on its own is a periodic update check against studio.connections.icu: it sends the app version, a coarse OS tag, and a random per-install id, and the server derives a coarse location (country, region, city, timezone), your network's ASN, locale, and a truncated user agent from that request, but never an IP address, hostname, username, file path, account, or email. Set AGENTHYDRA_NO_PING=1 to opt out; the check then goes straight to GitHub's API, with no install id or telemetry. Otherwise AgentHydra is one daemon on loopback with your regular browser and a tray icon: no cloud service, no account to sign up for. The other thing that leaves is the optional ChatGPT handoff, which opens the provider and leaves the final upload to you.</p>
-      </div>
-      <div class="card">
-        <h3>What can my AI agents do through AgentHydra's MCP server?</h3>
-        <p>AgentHydra exposes its whole API over MCP stdio, so Claude Code, Claude Desktop or Cursor can drive the same state as the dashboard: sessions, the run queue, the scheduler, the auto-resume monitor, accounts, quota, and the Claude, CLI and Codex instance managers. Agents can also check an account's remaining quota before fanning out work.</p>
-      </div>
-      <div class="card">
-        <h3>Does AgentHydra work offline?</h3>
-        <p>Yes, for reading and messaging: AgentHydra needs no network connection to list, tail, search or reply to sessions, since it only reads local transcript, rollout and SQLite files already on your machine. The <code>claude</code> CLI calls it dispatches still need whatever connectivity Claude itself requires, and the optional update check and ChatGPT handoff are both online-only and skippable.</p>
-      </div>
-      <div class="card">
-        <h3>How is AgentHydra different from tools like Crystal, Conductor or ccmanager?</h3>
-        <p>Those tools launch new Claude Code or Codex sessions in fresh git worktrees so you can run several tasks in parallel. AgentHydra instead reads the sessions you already have across Claude Code, Codex and OpenCode in one browser dashboard, and adds a queue, scheduler, instance manager and MCP server on top, without needing a new worktree per session.</p>
-      </div>
-      <div class="card">
-        <h3>Do I need Bun installed to use AgentHydra?</h3>
-        <p>No. Bun is only needed to run AgentHydra from source (<code>bun install</code>, <code>bun run build</code>, <code>bun run start</code>). The packaged Windows <code>.exe</code>, and the one-executable Linux and macOS builds on the Releases page, bundle everything and need nothing else installed.</p>
-      </div>
+    <div class="faq-list">
+            <details class="faq-item">
+        <summary>Is AgentHydra free?</summary>
+        <p class="faq-a">Yes. AgentHydra is free and open source under the MIT license, and no account is needed to run it. There's no cloud service behind it and nothing to sign up for: it reads the local Claude, Codex and OpenCode stores already on your machine and serves a dashboard on localhost.</p>
+      </details>
+            <details class="faq-item">
+        <summary>What AI coding tools does AgentHydra support?</summary>
+        <p class="faq-a">AgentHydra reads and lists sessions from Claude Code, Codex and OpenCode side by side, newest first, each badged with the tool that wrote it. Claude Code sessions come from your transcripts, Codex from its rollout JSONL files, and OpenCode CLI and Desktop share one local SQLite store, so both show up automatically.</p>
+      </details>
+            <details class="faq-item">
+        <summary>Can I reply to a Codex or OpenCode session from AgentHydra?</summary>
+        <p class="faq-a">No, only Claude sessions can be messaged back. AgentHydra can read and live-tail Codex and OpenCode conversations just like Claude's, but only Claude ships a CLI that can be handed a prompt, so Codex and OpenCode sessions open without a reply box instead of a send button that quietly does nothing.</p>
+      </details>
+            <details class="faq-item">
+        <summary>Is AgentHydra private, or does it send my data anywhere?</summary>
+        <p class="faq-a">Not entirely. The one thing that leaves your machine on its own is a periodic update check against studio.connections.icu: it sends the app version, a coarse OS tag, and a random per-install id, and the server derives a coarse location (country, region, city, timezone), your network's ASN, locale, and a truncated user agent from that request, but never an IP address, hostname, username, file path, account, or email. Set AGENTHYDRA_NO_PING=1 to opt out; the check then goes straight to GitHub's API, with no install id or telemetry. Otherwise AgentHydra is one daemon on loopback with your regular browser and a tray icon: no cloud service, no account to sign up for. The other thing that leaves is the optional ChatGPT handoff, which opens the provider and leaves the final upload to you.</p>
+      </details>
+            <details class="faq-item">
+        <summary>What can my AI agents do through AgentHydra's MCP server?</summary>
+        <p class="faq-a">AgentHydra exposes its whole API over MCP stdio, so Claude Code, Claude Desktop or Cursor can drive the same state as the dashboard: sessions, the run queue, the scheduler, the auto-resume monitor, accounts, quota, and the Claude, CLI and Codex instance managers. Agents can also check an account's remaining quota before fanning out work.</p>
+      </details>
+            <details class="faq-item">
+        <summary>Does AgentHydra work offline?</summary>
+        <p class="faq-a">Yes, for reading and messaging: AgentHydra needs no network connection to list, tail, search or reply to sessions, since it only reads local transcript, rollout and SQLite files already on your machine. The <code>claude</code> CLI calls it dispatches still need whatever connectivity Claude itself requires, and the optional update check and ChatGPT handoff are both online-only and skippable.</p>
+      </details>
+            <details class="faq-item">
+        <summary>How is AgentHydra different from tools like Crystal, Conductor or ccmanager?</summary>
+        <p class="faq-a">Those tools launch new Claude Code or Codex sessions in fresh git worktrees so you can run several tasks in parallel. AgentHydra instead reads the sessions you already have across Claude Code, Codex and OpenCode in one browser dashboard, and adds a queue, scheduler, instance manager and MCP server on top, without needing a new worktree per session.</p>
+      </details>
+            <details class="faq-item">
+        <summary>Do I need Bun installed to use AgentHydra?</summary>
+        <p class="faq-a">No. Bun is only needed to run AgentHydra from source (<code>bun install</code>, <code>bun run build</code>, <code>bun run start</code>). The packaged Windows <code>.exe</code>, and the one-executable Linux and macOS builds on the Releases page, bundle everything and need nothing else installed.</p>
+      </details>
     </div>
   </section>
   </main>
