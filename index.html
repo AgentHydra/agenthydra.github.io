@@ -411,6 +411,32 @@
     .duo-card h3 { margin: 0 0 7px; font-size: 1.12rem; font-weight: 640; }
     .duo-card p { margin: 0; color: var(--muted); font-size: 0.96rem; }
 
+    /* ── Per-OS downloads ── */
+    /* Six tiles because there are six builds. The install section used to point at
+       /releases and leave the visitor to tell darwin-arm64 from darwin-x64 by reading
+       filenames, which is not a thing to ask of somebody who just wants the app
+       (owner, 2026-09-16). Every build is listed rather than hidden behind detection,
+       so a person who knows better than the browser can just take the right one. */
+    .os-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
+    @media (max-width: 860px){ .os-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px){ .os-grid { grid-template-columns: 1fr; } }
+    .os-opt {
+      display: flex; flex-direction: column; gap: 5px;
+      border: 1px solid var(--border); border-radius: 11px; padding: 14px 16px;
+      background: rgba(255,255,255,0.015); color: var(--text);
+      transition: border-color .15s, background .15s, transform .12s;
+    }
+    .os-opt:hover { border-color: var(--border-2); background: rgba(255,255,255,0.04); transform: translateY(-1px); }
+    .os-opt:active { transform: translateY(0); }
+    .os-n { display: flex; align-items: center; gap: 9px; font-size: 0.97rem; font-weight: 600; }
+    .os-n svg { flex: 0 0 auto; opacity: .8; }
+    .os-k { font-size: 0.8rem; color: var(--muted); }
+    /* Marked by the runtime script once it knows the visitor's OS and architecture.
+       When it cannot tell, nothing is marked: a highlight that guesses wrong is worse
+       than no highlight, and on this page a wrong guess is a build that will not run. */
+    .os-opt.is-you { border-color: var(--brand); background: rgba(193,95,60,0.08); }
+    .os-opt.is-you .os-k::after { content: " · your machine"; color: var(--brand-bright); }
+
     /* ── Install notes ── */
     .notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
     .note-item { border: 1px solid var(--border); border-left: 2px solid var(--border-2); border-radius: 10px; padding: 16px 18px; background: rgba(255,255,255,0.015); }
@@ -650,9 +676,9 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
         "description": "A local dashboard for every AI coding session on your machine. Live-tail Claude Code, Codex and OpenCode in a single list, keep isolated Claude and Codex instances straight about which account is which, and queue claude runs to fire now or on a schedule. The whole API is on MCP, so your agents drive the same state. One daemon, your browser, a tray icon. Local-first, apart from a small, opt-out update ping.",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Windows, macOS, Linux",
-        "softwareVersion": "0.38.3",
+        "softwareVersion": "0.42.0",
         "url": "https://agenthydra.lunarwerx.com/",
-        "downloadUrl": "https://github.com/LunarWerxs/AgentHydra/releases",
+        "downloadUrl": "https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe",
         "softwareHelp": {
           "@type": "CreativeWork",
           "url": "https://github.com/LunarWerxs/AgentHydra/blob/main/docs/REFERENCE.md"
@@ -793,6 +819,13 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
   </script>
 </head>
 <body>
+<!-- OS marks, defined once and referenced with <use>. Apple and Tux are
+     simple-icons (CC0); the Windows four-pane matches the rest of the fleet. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <symbol id="os-win" viewBox="0 0 24 24"><path d="M3 5.07 10.34 4.06v7.18H3zM10.34 12.41v7.2L3 18.6v-6.19zM11.49 3.9 21 2.5v8.74h-9.51zM21 12.41v8.74l-9.51-1.36v-7.38z"/></symbol>
+  <symbol id="os-apple" viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></symbol>
+  <symbol id="os-linux" viewBox="0 0 24 24"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/></symbol>
+</defs></svg>
 <a class="lw-parent" href="https://lunarwerx.com/" aria-label="Back to LunarWerx Studios, the parent studio"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg><span class="lw-tip" aria-hidden="true"><span>LunarWerx Studios</span><span>Every app we build, in one place</span></span></a>
   <nav>
     <div class="wrap nav-inner">
@@ -817,9 +850,12 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       <h1>Every local AI coding session <span class="grad">in one tab</span></h1>
       <p class="lede">Run AI tools in more than one place and nothing shows you all of it at once. AgentHydra live-tails Claude Code, Codex and OpenCode in a single list, keeps your isolated Claude and Codex instances straight about which account is which, and queues <code>claude</code> runs to fire now or at 3am. One daemon, your browser, a tray icon.</p>
       <div class="cta">
-        <a class="btn btn-primary" href="https://github.com/LunarWerxs/AgentHydra/releases" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-          Download
+        <!-- Links the FILE, and the runtime script below swaps it for the visitor's own
+             OS and architecture. It used to open /releases, where six archives wait to
+             be told apart by filename. -->
+        <a class="btn btn-primary js-dl-primary" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows">
+          <svg class="js-dl-icon" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
+          <span class="js-dl-label">Download for Windows</span>
         </a>
         <a class="btn btn-ghost" href="https://github.com/LunarWerxs/AgentHydra" target="_blank" rel="noopener">
           <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -1359,7 +1395,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       <div class="duo-card">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></div>
         <h3>Download a build</h3>
-        <p>On Windows, run the versioned <code>.exe</code> straight from Releases. It carries its own icon, embeds the web app, and opens no console window. The ZIP next to it is the smaller transport the updater uses. Linux and macOS builds are one-executable archives. No Bun, no sidecar folders.</p>
+        <p>On Windows, run the versioned <code>.exe</code> below. It carries its own icon, embeds the web app, and opens no console window. The ZIP next to it is the smaller transport the updater uses. Linux and macOS builds are one-executable archives. No Bun, no sidecar folders.</p>
       </div>
       <div class="duo-card">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg></div>
@@ -1367,6 +1403,34 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
         <p>With <a href="https://bun.sh" target="_blank" rel="noopener" style="color:var(--brand-bright)">Bun</a> on the machine, it is a clone, <code>bun install</code>, <code>bun run build</code> and <code>bun run start</code>. Either way the dashboard is at <code>http://localhost:7787</code>, bound to loopback only.</p>
       </div>
     </div>
+
+    <div class="os-grid">
+      <a class="os-opt" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows x64, the single .exe">
+        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>Windows</span>
+        <span class="os-k">x64 · .exe</span>
+      </a>
+      <a class="os-opt" data-dl="mac-arm64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-darwin-arm64.tar.gz" download aria-label="Download AgentHydra for macOS on Apple silicon">
+        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-apple"/></svg>macOS</span>
+        <span class="os-k">Apple silicon · .tar.gz</span>
+      </a>
+      <a class="os-opt" data-dl="linux-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-linux-x64.tar.gz" download aria-label="Download AgentHydra for Linux x64">
+        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-linux"/></svg>Linux</span>
+        <span class="os-k">x64 · .tar.gz</span>
+      </a>
+      <a class="os-opt" data-dl="win-x64-zip" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.zip" download aria-label="Download AgentHydra for Windows x64 as a zip">
+        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>Windows</span>
+        <span class="os-k">x64 · .zip</span>
+      </a>
+      <a class="os-opt" data-dl="mac-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-darwin-x64.tar.gz" download aria-label="Download AgentHydra for macOS on Intel">
+        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-apple"/></svg>macOS</span>
+        <span class="os-k">Intel · .tar.gz</span>
+      </a>
+      <a class="os-opt" data-dl="linux-arm64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-linux-arm64.tar.gz" download aria-label="Download AgentHydra for Linux ARM64">
+        <span class="os-n"><svg width="15" height="15" fill="currentColor" aria-hidden="true"><use href="#os-linux"/></svg>Linux</span>
+        <span class="os-k">ARM64 · .tar.gz</span>
+      </a>
+    </div>
+    <p class="sub-note" style="margin-top:14px"><span class="js-app-version">v0.42.0</span> · free and open source (MIT) · no account needed to run it</p>
 
     <div class="notes">
       <div class="note-item">
@@ -1430,9 +1494,9 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
   <section class="wrap foot-cta">
     <h2>Stop alt-tabbing to remember what is running</h2>
     <p>One daemon. Every Claude, Codex and OpenCode session in one list, every isolated instance in one table, and an MCP door for your agents.</p>
-    <a class="btn btn-primary" href="https://github.com/LunarWerxs/AgentHydra/releases" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-      Download a release
+    <a class="btn btn-primary js-dl-primary" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v0.42.0/AgentHydra-0.42.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows">
+      <svg class="js-dl-icon" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
+      <span class="js-dl-label">Download for Windows</span>
     </a>
   </section>
 
@@ -1784,5 +1848,138 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
 })();
 </script>
 <!-- /LunarWerx Discord badge -->
+<script>
+/* Keeps the download links, the version label and the JSON-LD current without a
+ * redeploy, and points the big buttons at the visitor's own machine.
+ *
+ * Every Download on this page used to open /releases, where six archives wait to be
+ * told apart by filename -- and this is the product with the most of them, including
+ * two Macs and two Linuxes (owner, 2026-09-16). They link the file now.
+ *
+ * A direct asset URL is version-pinned, so it would 404 the day a release ships. Two
+ * things stop that: scripts/sync-version.mjs rewrites the baked-in URLs on a schedule
+ * and refuses to write one whose asset the release does not carry, and this script
+ * repairs the gap between a release and that job running. With JS off, the baked-in
+ * URLs still download a real build. */
+(function(){
+  var REPO = "https://github.com/LunarWerxs/AgentHydra";
+
+  /* Every asset a release carries, keyed by the data-dl value the markup uses. These
+     filenames carry the version, so the name is rebuilt per release rather than fixed. */
+  function files(v){ return {
+    "win-x64"    : "AgentHydra-" + v + "-windows-x64.exe",
+    "win-x64-zip": "AgentHydra-" + v + "-windows-x64.zip",
+    "mac-arm64"  : "AgentHydra-" + v + "-darwin-arm64.tar.gz",
+    "mac-x64"    : "AgentHydra-" + v + "-darwin-x64.tar.gz",
+    "linux-x64"  : "AgentHydra-" + v + "-linux-x64.tar.gz",
+    "linux-arm64": "AgentHydra-" + v + "-linux-arm64.tar.gz"
+  }; }
+  var LABEL = {
+    "win-x64"    : ["Download for Windows",         "win"],
+    "win-x64-zip": ["Download for Windows",         "win"],
+    "mac-arm64"  : ["Download for macOS",           "apple"],
+    "mac-x64"    : ["Download for macOS (Intel)",   "apple"],
+    "linux-x64"  : ["Download for Linux",           "linux"],
+    "linux-arm64": ["Download for Linux (ARM64)",   "linux"]
+  };
+
+  var state = { version: null, pick: null, urls: {} };
+
+  /* The version already on the page, read off a download href rather than a separate
+     data attribute: the href is the thing that has to be right. */
+  (function(){
+    var a = document.querySelector("a[data-dl]");
+    var m = a && (a.getAttribute("href") || "").match(/\/download\/v(\d+\.\d+\.\d+[^\/]*)\//);
+    if (m) state.version = m[1];
+  })();
+
+  /* Android reports Linux and iPadOS reports Mac, and there is no build for either, so
+     both fall through to null and the baked-in Windows default stands; ChromeOS too.
+     Architecture is only knowable through client hints -- Safari has none, so an
+     undetected Mac gets Apple silicon, which is every Mac sold since 2020. */
+  function detectOS(){
+    var ua = navigator.userAgent || "";
+    var p  = (navigator.userAgentData && navigator.userAgentData.platform) || "";
+    if (/Android|iPhone|iPad|iPod|CrOS/i.test(ua)) return null;
+    if (/mac/i.test(p)   || /Mac OS X|Macintosh/i.test(ua)) return "mac";
+    if (/linux/i.test(p) || /Linux/i.test(ua))              return "linux";
+    if (/win/i.test(p)   || /Windows/i.test(ua))            return "win";
+    return null;
+  }
+  function pickFor(os, arm){
+    if (os === "mac")   return arm === false ? "mac-x64"     : "mac-arm64";
+    if (os === "linux") return arm === true  ? "linux-arm64" : "linux-x64";
+    if (os === "win")   return "win-x64";   // no ARM64 Windows build is published
+    return null;
+  }
+
+  function urlFor(key){
+    if (state.urls[key]) return state.urls[key];        // the release said so
+    if (!state.version) return null;                    // leave the baked-in href alone
+    var f = files(state.version)[key];
+    return f ? REPO + "/releases/download/v" + state.version + "/" + f : null;
+  }
+
+  /* Idempotent: safe to call again as detection and the release fetch land. */
+  function render(){
+    var primary = state.pick || "win-x64";
+    document.querySelectorAll("a.js-dl-primary").forEach(function(a){ a.setAttribute("data-dl", primary); });
+    document.querySelectorAll("a[data-dl]").forEach(function(a){
+      var href = urlFor(a.getAttribute("data-dl"));
+      if (href) a.setAttribute("href", href);
+    });
+    document.querySelectorAll(".js-dl-label").forEach(function(el){ el.textContent = LABEL[primary][0]; });
+    document.querySelectorAll(".js-dl-icon use").forEach(function(u){ u.setAttribute("href", "#os-" + LABEL[primary][1]); });
+    document.querySelectorAll("a.js-dl-primary").forEach(function(a){
+      a.setAttribute("aria-label", LABEL[primary][0].replace("Download", "Download AgentHydra"));
+    });
+    document.querySelectorAll(".os-grid a[data-dl]").forEach(function(a){
+      a.classList.toggle("is-you", state.pick !== null && a.getAttribute("data-dl") === state.pick);
+    });
+  }
+
+  try {
+    var os = detectOS();
+    state.pick = pickFor(os, null);
+    render();
+    var uad = navigator.userAgentData;
+    if (os && uad && typeof uad.getHighEntropyValues === "function") {
+      uad.getHighEntropyValues(["architecture"]).then(function(h){
+        state.pick = pickFor(os, /arm/i.test((h && h.architecture) || ""));
+        render();
+      }).catch(function(){});
+    }
+    fetch("https://api.github.com/repos/LunarWerxs/AgentHydra/releases/latest", { headers: { "Accept": "application/vnd.github+json" } })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(rel){
+        if (!rel || !rel.tag_name) return;
+        var bare = String(rel.tag_name).trim().replace(/^v/, "");
+        if (!/^\d+\.\d+\.\d+/.test(bare)) return;   // never write a draft name into the page
+        state.version = bare;
+        /* Prefer the URL the release itself reports over one rebuilt from a filename:
+           a renamed asset is then still found instead of 404ing. */
+        var want = files(bare);
+        (rel.assets || []).forEach(function(asset){
+          Object.keys(want).forEach(function(key){
+            if (want[key] === asset.name && asset.browser_download_url) state.urls[key] = asset.browser_download_url;
+          });
+        });
+        render();
+        document.querySelectorAll(".js-app-version").forEach(function(el){ el.textContent = "v" + bare; });
+        document.querySelectorAll('script[type="application/ld+json"]').forEach(function(s){
+          try {
+            var data = JSON.parse(s.textContent), changed = false;
+            (function walk(o){ if (o && typeof o === "object") { Object.keys(o).forEach(function(k){
+              if (k === "softwareVersion") { o[k] = bare; changed = true; }
+              else if (k === "downloadUrl" && urlFor("win-x64")) { o[k] = urlFor("win-x64"); changed = true; }
+              else { walk(o[k]); } }); } })(data);
+            if (changed) s.textContent = JSON.stringify(data);
+          } catch (e) {}
+        });
+      })
+      .catch(function(){});
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>
