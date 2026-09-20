@@ -640,7 +640,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
 @media (hover:none){a.lw-parent .lw-tip{display:none}}
 @media (prefers-reduced-motion:reduce){a.lw-parent .lw-tip{transition:opacity .12s ease,visibility 0s linear .12s;transform:none}a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{transform:none}}
 </style>
-    <!-- ARGUS Analytics Pixel (Connections, analytics.connections.icu).
+    <!-- ARGUS Analytics Pixel (Connections, analytics.connectionsapi.com).
          The key is a PUBLIC ingest key and is meant to ship in client JS.
          Honours DNT and Sec-GPC by itself, and is grant-by-default outside the
          EU/EEA/UK/CH (the pixel is stamped per-visitor at the edge). localhost
@@ -672,7 +672,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
                 // ?v= is the cache-bust lever: the pixel is served max-age=3600
                 // from ONE origin shared by every tracked site, so bump this when
                 // a pixel change has to reach existing readers now.
-                j.src = 'https://analytics.connections.icu/pixel.js?v=2';
+                j.src = 'https://analytics.connectionsapi.com/pixel.js?v=2';
                 j.onerror = function () { warn('[ARGUS] pixel.js failed to load (check CSP script-src / network / ad-blocker)'); };
                 var mount = d.head || d.getElementsByTagName('head')[0] || d.documentElement || d.body;
                 if (!mount) { warn('[ARGUS] no DOM mount point for pixel; skipping'); return; }
@@ -795,7 +795,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
             "name": "Is AgentHydra private, or does it send my data anywhere?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Not entirely. The one thing that leaves your machine on its own is a periodic update check against studio.connections.icu: it sends the app version, a coarse OS tag, and a random per-install id, and the server derives a coarse location (country, region, city, timezone), your network's ASN, locale, and a truncated user agent from that request, but never an IP address, hostname, username, file path, account, or email. Set AGENTHYDRA_NO_PING=1 to opt out; the check then goes straight to GitHub's API, with no install id or telemetry. Otherwise AgentHydra is one daemon on loopback with your regular browser and a tray icon: no cloud service, no account to sign up for. The other thing that leaves is the optional ChatGPT handoff, which opens the provider and leaves the final upload to you."
+              "text": "Not entirely. The one thing that leaves your machine on its own is a periodic update check against studio.connectionsapi.com: it sends the app version, a coarse OS tag, and a random per-install id, and the server derives a coarse location (country, region, city, timezone), your network's ASN, locale, and a truncated user agent from that request, but never an IP address, hostname, username, file path, account, or email. Set AGENTHYDRA_NO_PING=1 to opt out; the check then goes straight to GitHub's API, with no install id or telemetry. Otherwise AgentHydra is one daemon on loopback with your regular browser and a tray icon: no cloud service, no account to sign up for. The other thing that leaves is the optional ChatGPT handoff, which opens the provider and leaves the final upload to you."
             }
           },
           {
@@ -1512,7 +1512,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       </details>
             <details class="faq-item">
         <summary>Is AgentHydra private, or does it send my data anywhere?</summary>
-        <p class="faq-a">Not entirely. The one thing that leaves your machine on its own is a periodic update check against studio.connections.icu: it sends the app version, a coarse OS tag, and a random per-install id, and the server derives a coarse location (country, region, city, timezone), your network's ASN, locale, and a truncated user agent from that request, but never an IP address, hostname, username, file path, account, or email. Set AGENTHYDRA_NO_PING=1 to opt out; the check then goes straight to GitHub's API, with no install id or telemetry. Otherwise AgentHydra is one daemon on loopback with your regular browser and a tray icon: no cloud service, no account to sign up for. The other thing that leaves is the optional ChatGPT handoff, which opens the provider and leaves the final upload to you.</p>
+        <p class="faq-a">Not entirely. The one thing that leaves your machine on its own is a periodic update check against studio.connectionsapi.com: it sends the app version, a coarse OS tag, and a random per-install id, and the server derives a coarse location (country, region, city, timezone), your network's ASN, locale, and a truncated user agent from that request, but never an IP address, hostname, username, file path, account, or email. Set AGENTHYDRA_NO_PING=1 to opt out; the check then goes straight to GitHub's API, with no install id or telemetry. Otherwise AgentHydra is one daemon on loopback with your regular browser and a tray icon: no cloud service, no account to sign up for. The other thing that leaves is the optional ChatGPT handoff, which opens the provider and leaves the final upload to you.</p>
       </details>
             <details class="faq-item">
         <summary>What can my AI agents do through AgentHydra's MCP server?</summary>
