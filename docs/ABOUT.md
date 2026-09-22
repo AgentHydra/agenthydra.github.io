@@ -44,7 +44,7 @@ edit the dossier, not this block. Everything ABOVE the marker is yours.
 - `index.html` - single self-contained page: hero, product screenshot, three-step setup, feature grid, provider matrix, FAQ, and call-to-action links
 - `docs/` - supplementary markdown docs: README with links to source repo and live site
 - `icon.svg` - brand mark (terracotta logo) used in nav and page meta
-- `favicon.ico` - browser tab icon
+- `favicon.ico` - browser tab icon for browsers that do not read icon.svg (16/32/48 px only; `python scripts/optimize_images.py` rewrites it)
 - `og.png` - Open Graph image for social sharing (1280x640)
 - `pricing.md` - markdown file for pricing page reference (currently unused/linked)
 
