@@ -135,7 +135,8 @@
     }
     .lede { font-size: 1.14rem; color: var(--muted); max-width: 56ch; margin: 0 auto 32px; }
     .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: center; }
-    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 0 rgba(120,220,140,0.6); animation: pulse 2.4s infinite; }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 0 rgba(120,220,140,0.6); }
+    @media (prefers-reduced-motion: no-preference) { .pulse { animation: pulse 2.4s ease-out 3; } }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(120,220,140,0.5); } 70% { box-shadow: 0 0 0 7px rgba(120,220,140,0); } 100% { box-shadow: 0 0 0 0 rgba(120,220,140,0); } }
     .sub-note { margin-top: 16px; font-size: 0.82rem; color: var(--faint); }
 

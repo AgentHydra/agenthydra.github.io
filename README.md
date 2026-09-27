@@ -27,5 +27,5 @@ Edit it directly and push to `main`.
 It measures what a visitor actually reads, so collapsed `<details>`, elements with a `hidden`
 attribute and `<noscript>` do not count. A naive word count reads about three times high.
 
-To see a change rather than measure it, use `~/.claude/tools/shot/shotpage.mjs`, which
-screenshots the page with the scroll-reveal animations forced to their finished state.
+To see a change rather than measure it, screenshot the page with the scroll-reveal animations
+forced to their finished state: see [docs/screenshots.md](docs/screenshots.md) (the owner's copy of the tool is `~/.claude/tools/shot/shotpage.mjs`).
