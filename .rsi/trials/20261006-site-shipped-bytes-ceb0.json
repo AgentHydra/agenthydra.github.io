@@ -1,0 +1,24 @@
+{
+ "closed": null,
+ "def_hash": "7e260b9a1d39d813",
+ "id": "20261006-site-shipped-bytes-ceb0",
+ "idea": "Losslessly recompress og.png (palette PNG, optimize=True, pixels identical)",
+ "lane": "normal",
+ "metric": "site.shipped_bytes",
+ "opened": {
+  "at": "2026-10-06T10:07:08+00:00",
+  "by": "blogi",
+  "commit": "74a878634d1e3cd0a9c1884c4a295c7d41e7eb1d",
+  "machine": "MPC-HELL"
+ },
+ "pass_line": null,
+ "predict": {
+  "expect": 300000.0,
+  "hi": 334000.0,
+  "lo": 290000.0,
+  "p_keep": 0.8
+ },
+ "probe_minutes": null,
+ "project": "agenthydra-github-io",
+ "schema": "hydra-rsi-trial/1"
+}
