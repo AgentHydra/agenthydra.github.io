@@ -1,0 +1,12 @@
+schema: hydra-rsi/1
+# Committed size at HEAD of the files the landing site serves from the repo root.
+# Smaller pages load faster for visitors; this is the product's weight.
+metrics:
+  - id: site.shipped_bytes
+    kind: size
+    better: lower
+    unit: bytes
+    measure: "python scripts/rsi/shipped_bytes.py"
+    pick: 'shipped_bytes=(\d+)'
+    gate: exact
+    light: true
