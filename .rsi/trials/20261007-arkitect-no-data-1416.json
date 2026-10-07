@@ -1,5 +1,85 @@
 {
- "closed": null,
+ "closed": {
+  "a": {
+   "commit": "4b1302d0ced900c39691a152b1323152350bc3c6",
+   "def_hash": "5a64254c5433ebaa",
+   "dirty": false,
+   "id": "m-20261007T093311-e6a5c3",
+   "load_after": null,
+   "load_before": null,
+   "machine": "MPC-HELL",
+   "metric": "arkitect_no_data",
+   "project": "agenthydra-github-io",
+   "reason": null,
+   "seconds": null,
+   "settings": {
+    "arkitect_checks_total": 1394,
+    "arkitect_tool_version": null,
+    "gate": "exact",
+    "kind": "count",
+    "measure_files": {},
+    "measured_at": "2026-10-06T18:44:01+00:00",
+    "source": "index"
+   },
+   "started": "2026-10-07T09:33:11+00:00",
+   "status": "ok",
+   "value": 166
+  },
+  "applies_if": null,
+  "at": "2026-10-07T09:37:18+00:00",
+  "b": {
+   "commit": "4e57e702687bdb689305f61929534e92e4b4e778",
+   "def_hash": "5a64254c5433ebaa",
+   "dirty": false,
+   "id": "m-20261007T093657-c3386e",
+   "load_after": null,
+   "load_before": null,
+   "machine": "MPC-HELL",
+   "metric": "arkitect_no_data",
+   "project": "agenthydra-github-io",
+   "reason": null,
+   "seconds": null,
+   "settings": {
+    "arkitect_checks_total": 1394,
+    "arkitect_tool_version": null,
+    "gate": "exact",
+    "kind": "count",
+    "measure_files": {},
+    "measured_at": "2026-10-07T09:36:09+00:00",
+    "source": "index"
+   },
+   "started": "2026-10-07T09:36:57+00:00",
+   "status": "ok",
+   "value": 166
+  },
+  "guards": [
+   {
+    "a": 0,
+    "b": 0,
+    "declared": false,
+    "metric": "arkitect_gating_errors",
+    "state": "ok"
+   },
+   {
+    "a": 73,
+    "b": 73,
+    "declared": false,
+    "metric": "arkitect_warnings",
+    "state": "ok"
+   },
+   {
+    "a": 0,
+    "b": 0,
+    "declared": false,
+    "metric": "deps_total",
+    "state": "ok"
+   }
+  ],
+  "method": "exact: 166 -> 166",
+  "note": "no honest change: the 166 no-data checks are code-oriented (tests, types, deps) with no input on a static HTML/markdown site; nothing to add without inventing content",
+  "pattern": null,
+  "verdict": "inconclusive"
+ },
  "def_hash": "5a64254c5433ebaa",
  "id": "20261007-arkitect-no-data-1416",
  "idea": "probe",
