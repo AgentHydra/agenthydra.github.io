@@ -1,0 +1,24 @@
+{
+ "closed": null,
+ "def_hash": "5a64254c5433ebaa",
+ "id": "20261007-arkitect-no-data-1416",
+ "idea": "probe",
+ "lane": "normal",
+ "metric": "arkitect_no_data",
+ "opened": {
+  "at": "2026-10-07T09:32:58+00:00",
+  "by": "blogi",
+  "commit": "4b1302d0ced900c39691a152b1323152350bc3c6",
+  "machine": "MPC-HELL"
+ },
+ "pass_line": null,
+ "predict": {
+  "expect": 1.0,
+  "hi": 4.0,
+  "lo": 1.0,
+  "p_keep": 0.1
+ },
+ "probe_minutes": null,
+ "project": "agenthydra-github-io",
+ "schema": "hydra-rsi-trial/1"
+}
