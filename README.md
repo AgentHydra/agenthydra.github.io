@@ -1,8 +1,8 @@
 # agenthydra.github.io
 
-The landing page for **AgentHydra**: a local dashboard that puts every Claude, Codex and
-OpenCode session on the machine in one list, manages isolated Claude and Codex instances, and
-queues `claude` runs to fire now or on a schedule.
+The landing page for **AgentHydra 2.0**: one local window for every Claude Code chat on the PC,
+Claude Desktop's included, with your projects, their dev servers and every Claude and Codex
+account's quota, plus an MCP server for your agents.
 
 🔗 **Live:** https://agenthydra.lunarwerx.com
 📦 **Source & releases:** https://github.com/LunarWerxs/AgentHydra
@@ -11,6 +11,13 @@ queues `claude` runs to fire now or on a schedule.
 
 A single self-contained `index.html` (no build step, no dependencies), served by GitHub Pages.
 Edit it directly and push to `main`.
+
+## The version and downloads
+
+Never typed by hand. `scripts/sync-version.mjs` rewrites the version and the download links in
+`index.html`, and the version row in `pricing.md`, from the latest GitHub release;
+`.github/workflows/sync-version.yml` runs it on a schedule and on demand. After a release:
+`gh workflow run sync-version.yml --repo AgentHydra/agenthydra.github.io`.
 
 ## Checks
 

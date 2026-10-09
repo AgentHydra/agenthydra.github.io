@@ -1,26 +1,25 @@
 # AgentHydra site
 
-> The marketing site for a single-page dashboard that lists every Claude Code, Codex and OpenCode session on one machine in one browser.
+> The public site for AgentHydra 2.0: one local window for every Claude Code chat on a PC, with its projects, their dev servers and every Claude and Codex account's quota.
 
 <!-- odin:about HAND-OWNED above the GENERATED marker. Edit freely; `odin codex about --ingest` carries it back into Odin's Codex. -->
 
 ## What it is
 
-The landing and documentation site for AgentHydra, a local dashboard that unifies every Claude Code, Codex and OpenCode session on a single machine in one browser interface. Shipped as a single self-contained index.html with no build step or dependencies, deployed to GitHub Pages. Demonstrates AgentHydra's core capabilities: session browsing, instance management, queue and scheduler features, and the MCP server API that agents use to control the same state.
+The landing page for AgentHydra (https://github.com/LunarWerxs/AgentHydra), published from this repo by GitHub Pages at https://agenthydra.lunarwerx.com. It is one self-contained `index.html` with no build step: the hero, real screenshots of the 2.0 window, what it does, the downloads and an FAQ. Rewritten for 2.0 on 2026-10-08.
 
 ## Things not to forget
 
 _The intricacies worth remembering: the gotchas, the half-built parts, the decisions whose
 reason lives nowhere else. Odin never overwrites this section._
 
-- The FAQ exists twice by hand: once as JSON-LD FAQPage structured data for search/AI crawlers and once as visible on-page cards with the same questions - editing only one leaves the schema and the rendered page saying different things. anchors: `index.html:722`
-- That same FAQ duplication also lives on-screen, so a new or changed FAQ answer has to be typed into the visible card grid, not just the schema block. anchors: `index.html:1439`
-- The version number is hand-typed in three unrelated spots that already disagree (replica UI shows 0.14.0, footer shows v0.38.3, and pricing.md has its own reference) - there is no single source of truth to bump on release. anchors: `index.html:1106`
-- Footer version string is the other half of that same drift and is the one most likely to be treated as 'the' current version by a visitor. anchors: `index.html:1492`
-- The 'product screenshot' is not an image - it's a full interactive HTML/CSS replica of the real app UI (tab switching, hover states) built by hand, so a real UI redesign silently goes stale here until someone rebuilds the replica. anchors: `index.html:832`
-- Codex and OpenCode sessions are read-only by design, not by omission: only Claude ships a CLI that accepts a piped prompt, so the provider matrix and FAQ both encode a real product limit, not a site bug to be 'fixed' by adding a reply button here. anchors: `index.html:1439`
-- The site is intentionally a single self-contained index.html with no build step and no dependencies - the whole deploy is edit the file and push to main. anchors: `README.md:1`
-- pricing.md sits in the repo root but nothing in the site links to or renders it, so it is dead weight rather than a live page. anchors: `pricing.md:1`
+- The FAQ exists twice by hand: once as JSON-LD FAQPage structured data for search and AI crawlers and once as the visible cards, with the same questions. Editing only one leaves the schema and the page saying different things. anchors: `index.html:566`, `index.html:895`
+- The version and the download links are generated, never typed: `scripts/sync-version.mjs` rewrites them in `index.html` and `pricing.md` from the latest GitHub release, run by `.github/workflows/sync-version.yml` on a schedule and on demand (`gh workflow run sync-version.yml --repo AgentHydra/agenthydra.github.io` after a release). The page also corrects them in the browser after load, but crawlers and no-JS visitors read the static file. anchors: `scripts/sync-version.mjs:1`
+- The screenshots are real captures of the 2.0 demo window (`bun run screenshots` in the app repo's `desk2/`, which runs `scripts/window-shots.ts`), turned into WebP by `python scripts/optimize_images.py`. A UI change means retaking them; never commit a capture of a real chat. anchors: `img/window.webp`
+- The copy has a word budget and no em-dashes: `node scripts/copy-budget.mjs` (ceiling in `scripts/copy-budget.json`), also run by `.github/workflows/copy-budget.yml`. anchors: `scripts/copy-budget.json:1`
+- Codex and OpenCode sessions are read-only by design, not by omission: only Claude ships a CLI that accepts a piped prompt, so the FAQ encodes a real product limit, not a site bug to fix with a reply button. anchors: `index.html:571`
+- The site is one self-contained `index.html` with no build step and no dependencies: the whole deploy is edit the file and push to main. anchors: `README.md:1`
+- `pricing.md` is a machine-readable pricing summary for agentic buyers. Nothing on the page links to it; its version row is kept by `sync-version.mjs`. anchors: `pricing.md:1`
 
 <!-- odin:about GENERATED BEGIN - rewritten by `odin codex about --publish`; edit the Codex, not this -->
 

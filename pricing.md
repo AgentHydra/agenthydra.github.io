@@ -1,6 +1,6 @@
 # AgentHydra: pricing
 
-Machine-readable summary for agentic buyers and procurement checks. Last updated: 2026-08-23.
+Machine-readable summary for agentic buyers and procurement checks. Last updated: 2026-10-08.
 
 ## Summary
 
@@ -12,7 +12,7 @@ Machine-readable summary for agentic buyers and procurement checks. Last updated
 | Account required | No |
 | Seats / user limits | None (local software, not a hosted service) |
 | Trial or freemium gate | None; nothing is paywalled or time-limited |
-| Current version | v0.38.3 |
+| Current version | v2.0.2 |
 | Platforms | Windows, macOS, Linux |
 
 AgentHydra itself is free and open source under the MIT license

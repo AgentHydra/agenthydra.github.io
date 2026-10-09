@@ -40,6 +40,9 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PAGE = path.join(ROOT, 'index.html');
+/** The machine-readable pricing summary for agentic buyers: it names the current version too,
+ *  and was left saying 0.38.3 until 2.0.2 because nothing here moved it. */
+const PRICING = path.join(ROOT, 'pricing.md');
 const REPO = 'LunarWerxs/AgentHydra';
 const RELEASES = `https://api.github.com/repos/${REPO}/releases/latest`;
 
@@ -153,9 +156,20 @@ function rewriteDownloads(html, version, assets) {
   return out.replace(ldRe, (_m, a, b) => `${a}${primary}${b}`);
 }
 
+/** pricing.md's "Current version" row. Throws on a missing row, like rewriteVersion. */
+function rewritePricing(md, version) {
+  const rowRe = /(\|\s*Current version\s*\|\s*)v?\d+\.\d+\.\d+[^|]*?(\s*\|)/g;
+  if (countMatches(md, rowRe) !== 1) {
+    throw new Error('sync-version: pricing.md has no single "| Current version | ... |" row. Fix the regex or the table.');
+  }
+  return md.replace(rowRe, `$1v${version}$2`);
+}
+
 const { version, assets } = await latestRelease();
 const before = fs.readFileSync(PAGE, 'utf8');
 const after = rewriteDownloads(rewriteVersion(before, version), version, assets);
+const pricingBefore = fs.readFileSync(PRICING, 'utf8');
+const pricingAfter = rewritePricing(pricingBefore, version);
 
 // NOTHING here calls process.exit(), and that is deliberate rather than stylistic.
 // Calling it from inside a top-level await tears the event loop down mid-flight, and on
@@ -163,19 +177,21 @@ const after = rewriteDownloads(rewriteVersion(before, version), version, assets)
 // report "stale" with a 1, and a happy path meant to report success with a 0, both come
 // back as a crash. Setting exitCode and letting the process end on its own gives the
 // codes this script promises.
-if (before === after) {
+if (before === after && pricingBefore === pricingAfter) {
   console.log(`site version and download links already ${version}; nothing to do`);
 } else {
   // Say what moved. A silent "updated" tells nobody whether the regexes still match what
   // the page looks like today.
   const was = [...before.matchAll(/"softwareVersion"\s*:\s*"([^"]+)"/g)].map((m) => m[1]);
   console.log(`site version ${[...new Set(was)].join(', ') || '(unknown)'} -> ${version}`);
+  if (pricingBefore !== pricingAfter) console.log(`pricing.md current version -> v${version}`);
 
   if (check) {
     console.error('STALE: run `node scripts/sync-version.mjs` to fix');
     process.exitCode = 1;
   } else {
     fs.writeFileSync(PAGE, after);
-    console.log('index.html updated');
+    fs.writeFileSync(PRICING, pricingAfter);
+    console.log('index.html and pricing.md updated');
   }
 }
