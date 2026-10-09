@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AgentHydra: every local AI coding session in one tab</title>
-  <meta name="description" content="A local dashboard for every Claude Code, Codex and OpenCode session on your machine, with an MCP server, a run queue, and instance management. Free, MIT." />
+  <title>AgentHydra: every AI coding chat and account in one window</title>
+  <meta name="description" content="One local window for every Claude Code chat on your PC, Claude Desktop’s included, with your projects, their dev servers and every Claude and Codex account’s quota. MCP for your agents. Free, MIT." />
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="color-scheme" content="dark" />
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
@@ -15,13 +15,13 @@
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://agenthydra.lunarwerx.com/" />
   <meta property="og:url" content="https://agenthydra.lunarwerx.com/" />
-  <meta property="og:title" content="AgentHydra: every local AI coding session in one tab" />
-  <meta property="og:description" content="Claude Code, Codex and OpenCode in a single list. Queue runs, schedule them, and keep isolated instances apart. Local, private, many heads and one dashboard." />
+  <meta property="og:title" content="AgentHydra: every AI coding chat and account in one window" />
+  <meta property="og:description" content="Every Claude Code chat on your PC in one sidebar, grouped by project. Dev servers built in, every account’s quota in one table. Local, free, MIT." />
   <meta property="og:image" content="https://agenthydra.lunarwerx.com/og.png" />
   <meta property="og:image:width" content="1280" />
   <meta property="og:image:height" content="640" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AgentHydra: every local AI coding session in one tab" />
+  <meta name="twitter:title" content="AgentHydra: every AI coding chat and account in one window" />
   <meta name="twitter:image" content="https://agenthydra.lunarwerx.com/og.png" />
 
   <style>
@@ -152,204 +152,21 @@
     .tl-r { background: #f0655c; } .tl-y { background: #f2bd4a; } .tl-g { background: #4bd07a; }
     .frame-url { margin-left: 10px; font-family: var(--mono); font-size: 0.74rem; color: var(--faint); }
 
-    /* the replica */
-    .app { display: flex; flex-direction: column; height: 648px; background: #0a0a0a; color: var(--text); font-size: 13px; user-select: none; }
-    .app-top { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--border); }
-    .app-top .logo { width: 22px; height: 22px; border-radius: 6px; }
-    .app-name { font-weight: 700; letter-spacing: -0.01em; font-size: 13px; }
-    .app-tabs { display: flex; gap: 4px; margin-left: 6px; }
-    .tab { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; color: var(--muted); font-weight: 500; }
-    .tab.on { background: var(--surface-2); color: var(--text); }
-    .tab svg { width: 14px; height: 14px; }
-    .app-top .spacer { margin-left: auto; }
-    /* "1 running", the live dispatch counter the app shows next to the Queue button */
-    .running-ind { display: inline-flex; align-items: center; gap: 6px; color: var(--success); font-size: 12px; font-weight: 560; padding-right: 4px; }
-    .running-ind svg { width: 13px; height: 13px; animation: spin 1.6s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .btn-q { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 8px; background: var(--app-accent); color: var(--app-accent-fg); font-weight: 600; font-size: 12px; }
-    .btn-q svg { width: 14px; height: 14px; }
-    .btn-q .qn { display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: rgba(0,0,0,0.24); font-size: 10px; font-weight: 700; }
-    .icon-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; color: var(--muted); }
-    .icon-btn svg { width: 16px; height: 16px; }
+    .frame img { display: block; width: 100%; height: auto; }
 
-    .app-body { position: relative; display: flex; min-height: 0; flex: 1; }
-    .list { width: 310px; flex: none; border-right: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; }
-    .list-tools { display: flex; align-items: center; gap: 6px; padding: 11px; }
-    .search { flex: 1; min-width: 0; display: flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 9px; color: var(--faint); font-size: 12px; }
-    .search svg { width: 14px; height: 14px; flex: none; }
-    .search .filt { margin-left: auto; opacity: .8; }
-    .itool { width: 27px; height: 27px; flex: none; display: grid; place-items: center; border-radius: 8px; border: 1px solid var(--border); color: var(--muted); }
-    .itool svg { width: 14px; height: 14px; }
-    .list-scroll { overflow: hidden; padding: 6px 8px; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
-    .row { border: 1px solid transparent; border-radius: 10px; padding: 9px 11px; }
-    .row.sel { border-color: color-mix(in oklab, var(--app-accent) 45%, transparent); background: color-mix(in oklab, var(--app-accent) 12%, transparent); }
-    .row .rtop { display: flex; align-items: flex-start; gap: 8px; }
-    .row .title { flex: 1; min-width: 0; font-weight: 560; font-size: 13px; line-height: 1.3; color: var(--text); }
-    .row .meta { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 3px 10px; color: var(--faint); font-size: 11px; }
-    .row .meta span { display: inline-flex; align-items: center; gap: 4px; }
-    .row .meta svg { width: 11px; height: 11px; }
-    .row .done-tick { flex: none; margin-top: 1px; color: var(--success); display: inline-flex; }
-    .row .done-tick svg { width: 13px; height: 13px; }
-    .row.done .title { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.3); }
-    /* Provider badge. The app tags every row with which tool wrote the transcript. */
-    .pbadge { flex: none; font-size: 10px; font-weight: 560; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; line-height: 1.5; }
-    .pbadge.claude { color: var(--claude); }
-    .pbadge.codex { color: var(--codex); }
-    .pbadge.opencode { color: var(--opencode); }
-    .pbadge.ro { opacity: .95; }
-
-    .detail { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
-    .detail-head { padding: 13px 16px 10px; border-bottom: 1px solid transparent; display: flex; align-items: flex-start; gap: 12px; }
-    .detail-head .dmain { flex: 1; min-width: 0; }
-    .detail-head .h { font-size: 15px; font-weight: 640; }
-    .detail-head .sub { margin-top: 5px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; color: var(--faint); font-size: 11px; }
-    .detail-head .sub span { display: inline-flex; align-items: center; gap: 4px; }
-    .detail-head .sub svg { width: 11px; height: 11px; }
-    .detail-head .sub .m { font-family: var(--mono); }
-    .dacts { display: flex; align-items: center; gap: 4px; flex: none; }
-    .dact { height: 26px; min-width: 26px; padding: 0 6px; display: inline-grid; place-items: center; border-radius: 7px; border: 1px solid var(--border); color: var(--muted); font-size: 10.5px; font-weight: 560; }
-    .dact svg { width: 13px; height: 13px; }
-    .dact.wide { display: inline-flex; gap: 4px; }
-    /* A long transcript runs past the bottom of the frame. Fade it out so the cut
-       reads as "there is more" instead of a rendering fault. */
-    .chat { flex: 1; min-height: 0; overflow: hidden; padding: 14px 16px; display: flex; flex-direction: column; justify-content: flex-start; gap: 12px;
-      -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 46px), transparent);
-      mask-image: linear-gradient(180deg, #000 calc(100% - 46px), transparent); }
-    .msg { max-width: 82%; padding: 9px 13px; border-radius: 16px; font-size: 12.5px; line-height: 1.5; }
-    .msg.u { align-self: flex-end; border-bottom-right-radius: 6px; background: color-mix(in oklab, var(--app-accent) 15%, transparent); }
-    .msg.a { align-self: flex-start; border-bottom-left-radius: 6px; background: rgba(255,255,255,0.05); }
-    .composer { border-top: 1px solid var(--border); padding: 11px 14px; display: flex; flex-direction: column; gap: 9px; }
-    .composer .ta { color: var(--faint); font-size: 12.5px; }
-    .composer .ctrls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 11.5px; }
-    .chip svg { width: 12px; height: 12px; }
-    .composer .right { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; }
-    .composer .send { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; background: var(--app-accent); color: var(--app-accent-fg); font-weight: 600; font-size: 12px; }
-    .composer .send svg { width: 13px; height: 13px; }
-    /* The split Queue button: "Queue" plus a chevron that opens "Queue now". */
-    .split { display: inline-flex; align-items: stretch; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; color: var(--muted); font-size: 11.5px; }
-    .split .a { display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; }
-    .split .b { display: grid; place-items: center; padding: 0 5px; border-left: 1px solid var(--border); }
-    .split svg { width: 12px; height: 12px; }
-    /* Codex and OpenCode transcripts are readable but not writable. The app drops the
-       composer entirely for those, so the replica does too.
-       `display:flex` outranks the UA's [hidden] rule, so say it here. */
-    .composer[hidden] { display: none; }
-
-    /* ── Product-shot interactivity (tabs, panels, instances table) ── */
-    .app .tab, .app .btn-q, .app .icon-btn, .app .row, .app .send, .app .itool,
-    .app .mini, .app .kebab, .app .switch, .app .seg span, .app .close, .app .qrun,
-    .app .dact, .app .split, .app .add, .app .qicon { cursor: pointer; }
-    .app .dact:hover, .app .itool:hover, .app .qicon:hover, .app .split:hover { color: var(--text); border-color: var(--border-2); }
-    .app .tab:hover { color: var(--text); }
-    .app .row:hover { border-color: var(--border-2); background: rgba(255,255,255,0.03); }
-    .app .row.sel:hover { border-color: color-mix(in oklab, var(--app-accent) 45%, transparent); }
-    .app .icon-btn:hover, .app .kebab:hover, .app .close:hover { color: var(--text); }
-    .app .btn-q.active, .app .icon-btn.active { background: var(--surface-2); color: var(--text); }
-
-    /* view switch */
-    .view { display: none; flex: 1; min-width: 0; min-height: 0; }
-    .view.on { display: flex; }
-    #view-instances { flex-direction: column; }
-
-    /* Instances view: three stacked sections (Claude Desktop, Claude CLI, Codex), each
-       with its own header and table, exactly as the app stacks them. */
-    .inst-tools { display: flex; align-items: center; gap: 8px; padding: 12px 14px 9px; flex: none; }
-    .inst-tools .h { font-weight: 640; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; }
-    .inst-tools .h svg { width: 15px; height: 15px; }
-    .inst-tools .h .n { color: var(--faint); font-weight: 400; }
-    .inst-tools .grow { margin-left: auto; }
-    .inst-tools .add { width: 26px; height: 26px; display: inline-grid; place-items: center; border-radius: 7px; background: var(--app-accent); color: var(--app-accent-fg); }
-    .inst-tools .add svg { width: 14px; height: 14px; }
-    .inst-scroll { overflow: auto; flex: 1; min-height: 0; }
-    .inst-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
-    .inst-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 8px; }
-    .inst-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.14) transparent; }
-    .isec + .isec { border-top: 1px solid var(--border); margin-top: 6px; }
-    .itable { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .itable th { text-align: left; font-weight: 500; color: var(--faint); padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 11px; white-space: nowrap; }
-    .itable th.r, .itable td.r { text-align: right; }
-    .itable td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: middle; white-space: nowrap; }
-    .itable tbody tr:last-child td { border-bottom: 0; }
-    .irow:hover td { background: rgba(255,255,255,0.025); }
-    .iname { color: var(--text); font-weight: 560; }
-    .idir { font-family: var(--mono); font-size: 10px; color: var(--faint); margin-top: 3px; }
-    .iglyph { position: relative; display: inline-flex; width: 18px; height: 18px; }
-    .iglyph svg { width: 18px; height: 18px; }
-    .iglyph.off { opacity: 0.4; }
-    .iglyph .live { position: absolute; right: -3px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 2px #0a0a0a; }
-    /* Account chip: green when a login resolved, grey when the profile has none. */
-    .abadge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; color: #6fd18f; background: rgba(75,208,122,.11); }
-    .abadge.none { color: var(--faint); background: transparent; border: 1px solid var(--border-2); }
-    .ext { display: inline-block; margin-left: 6px; padding: 1px 7px; border: 1px solid var(--border); border-radius: 999px; font-size: 10px; color: var(--faint); vertical-align: middle; }
-    /* Weekly quota badge, which turns amber as it climbs. */
-    .ubadge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 560; color: #6fd18f; background: rgba(75,208,122,.11); }
-    .ubadge.warn { color: #e0a24f; background: rgba(224,162,79,.12); }
-    .ubadge.na { color: var(--faint); background: transparent; border: 1px solid var(--border-2); }
-    .plan { display: inline-block; padding: 2px 9px; border-radius: 7px; border: 1px solid var(--border-2); font-size: 11px; color: var(--muted); }
-    .dim { color: var(--faint); }
-    .mono { font-family: var(--mono); }
-    .mini { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border: 1px solid var(--border-2); border-radius: 8px; color: var(--text); font-size: 11.5px; }
-    .mini svg { width: 12px; height: 12px; }
-    .kebab { width: 26px; height: 26px; display: inline-grid; place-items: center; border-radius: 7px; color: var(--muted); vertical-align: middle; }
-    .kebab svg { width: 15px; height: 15px; }
-
-    /* slide-in panels (settings / queue) + scrim */
-    .scrim { position: absolute; inset: 0; background: rgba(0,0,0,.5); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 20; }
-    .scrim.on { opacity: 1; pointer-events: auto; }
-    .panel { position: absolute; top: 0; right: 0; bottom: 0; width: 340px; max-width: 84%; background: #0e0e0f; border-left: 1px solid var(--border); transform: translateX(101%); transition: transform .28s cubic-bezier(.4,0,.2,1); z-index: 21; display: flex; flex-direction: column; box-shadow: -30px 0 60px -30px rgba(0,0,0,.8); }
-    .panel.on { transform: none; }
-    .panel-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--border); font-weight: 640; font-size: 13px; flex: none; }
-    .panel-head .close { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 7px; color: var(--muted); }
-    .panel-head .close svg { width: 15px; height: 15px; }
-    .panel-body { overflow-y: auto; overflow-x: hidden; flex: 1; }
-    .panel-body::-webkit-scrollbar { width: 8px; }
-    .panel-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 8px; }
-    .panel-body { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.14) transparent; }
-
-    /* settings rows */
-    .sgroup { padding: 4px 14px 8px; }
-    .gt { font-size: 10.5px; text-transform: uppercase; letter-spacing: .1em; color: var(--faint); margin: 14px 0 4px; }
-    .srow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .srow:last-child { border-bottom: 0; }
-    .srow .lbl { color: var(--text); font-size: 12.5px; }
-    .srow .desc { color: var(--faint); font-size: 11px; margin-top: 2px; max-width: 30ch; }
-    .switch { width: 34px; height: 20px; border-radius: 999px; background: rgba(255,255,255,.15); position: relative; flex: none; transition: background .18s; }
-    .switch.on { background: var(--app-accent); }
-    .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .18s; }
-    .switch.on::after { transform: translateX(14px); }
-    .seg { display: inline-flex; border: 1px solid var(--border-2); border-radius: 8px; overflow: hidden; }
-    .seg span { padding: 4px 10px; font-size: 11.5px; color: var(--muted); }
-    .seg span.on { background: var(--app-accent); color: var(--app-accent-fg); }
-    .snum { padding: 4px 10px; border: 1px solid var(--border-2); border-radius: 8px; font-size: 11.5px; color: var(--text); min-width: 40px; text-align: center; font-family: var(--mono); }
-
-    /* queue items */
-    .q-tools { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); flex: none; }
-    .q-tools .qcount { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
-    .q-tools .qcount svg { width: 12px; height: 12px; color: var(--faint); }
-    .q-tools .add { width: 26px; height: 26px; display: inline-grid; place-items: center; border-radius: 7px; background: var(--app-accent); color: var(--app-accent-fg); }
-    .q-tools .add svg { width: 14px; height: 14px; }
-    .qitem { margin: 9px 12px; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; }
-    .qitem.running { border-color: color-mix(in oklab, var(--app-accent) 45%, transparent); background: color-mix(in oklab, var(--app-accent) 6%, transparent); }
-    .qitem .qhead { display: flex; align-items: flex-start; gap: 8px; }
-    .qitem .qt { flex: 1; min-width: 0; color: var(--text); font-size: 12.5px; font-weight: 540; line-height: 1.35; }
-    .qitem .qprompt { margin-top: 3px; color: var(--faint); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .qitem .qmeta { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-    .qtag { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--muted); padding: 2px 8px; border: 1px solid var(--border); border-radius: 999px; }
-    .qtag svg { width: 10px; height: 10px; }
-    .qtag.when { color: #e0a24f; border-color: rgba(224,162,79,.4); background: rgba(224,162,79,.09); }
-    .qstat { flex: none; display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 560; padding: 2px 9px; border-radius: 999px; color: var(--muted); background: rgba(255,255,255,0.06); }
-    .qstat svg { width: 10px; height: 10px; }
-    .qstat.run { color: #8ab6e8; background: rgba(91,157,214,.15); }
-    .qstat.run svg { animation: spin 1.6s linear infinite; }
-    .qrun { flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 7px; border: 1px solid var(--border-2); color: var(--text); font-weight: 560; font-size: 11px; }
-    .qrun svg { width: 12px; height: 12px; }
-    .qitem .qicons { margin-left: auto; display: inline-flex; gap: 2px; }
-    .qicon { width: 22px; height: 22px; display: inline-grid; place-items: center; border-radius: 6px; color: var(--faint); }
-    .qicon svg { width: 12px; height: 12px; }
-    .qfoot { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px 14px; color: var(--faint); font-size: 11.5px; }
-    .qfoot span { display: inline-flex; align-items: center; gap: 6px; }
-    .qfoot svg { width: 12px; height: 12px; }
+    /* Feature rows: a screenshot beside its words, alternating sides. */
+    .shots { display: grid; gap: 64px; margin-top: 40px; }
+    .shot-row { display: grid; grid-template-columns: 5fr 7fr; gap: 40px; align-items: center; }
+    .shot-row.flip { grid-template-columns: 7fr 5fr; }
+    .shot-row.flip .shot-text { order: 2; }
+    .shot-text h3 { margin: 0 0 8px; font-size: 1.24rem; font-weight: 650; letter-spacing: -0.01em; }
+    .shot-text p { margin: 0; color: var(--muted); }
+    .shot-img { border: 1px solid var(--border-2); border-radius: var(--radius); overflow: hidden; background: var(--surface); box-shadow: 0 40px 80px -40px rgba(0,0,0,0.9); }
+    .shot-img img { display: block; width: 100%; height: auto; }
+    @media (max-width: 860px) {
+      .shot-row, .shot-row.flip { grid-template-columns: 1fr; gap: 18px; }
+      .shot-row.flip .shot-text { order: 0; }
+    }
 
     /* ── Sections ────────────────────────────────────────── */
     section { padding: 58px 0; }
@@ -509,6 +326,7 @@
     .copy-btn:hover { color: var(--text); border-color: var(--brand); background: rgba(255,255,255,0.08); }
     .copy-btn svg { width: 12px; height: 12px; flex: none; }
     .code-body { margin: 0; padding: 20px 22px 24px; overflow-x: auto; font-family: var(--mono); font-size: 0.845rem; line-height: 1.75; color: var(--text); }
+    .code-body code { background: none; padding: 0; border-radius: 0; font-size: inherit; }
     .tok-punc { color: var(--faint); }
     .tok-key { color: #5b9dd6; }
     .tok-str { color: #e0a24f; }
@@ -558,9 +376,6 @@
     .foot-siblings a:hover { color: var(--text); }
 
     /* ── Responsive ──────────────────────────────────────── */
-    @media (max-width: 900px) {
-      .list { width: 260px; }
-    }
     @media (max-width: 1000px) {
       .nav-links { gap: 18px; font-size: 0.88rem; }
     }
@@ -569,20 +384,6 @@
       .nav-links .hide-sm { display: none; }
       .tool-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .quota { grid-template-columns: 1fr; gap: 22px; }
-    }
-    @media (max-width: 720px) {
-      /* product shot: drop the list, show the conversation full width */
-      .list { display: none; }
-      .app { height: 540px; }
-      /* instances table: shed the dense numeric columns so it fits a phone */
-      .hide-narrow { display: none; }
-      .panel { width: 300px; }
-      /* the app's own top bar has to fit a phone too: labels and the live
-         counter go, the two things you press stay */
-      .app-name, .running-ind, .tl-label { display: none; }
-      .app-top { gap: 7px; padding: 9px 10px; }
-      .detail-head { flex-wrap: wrap; }
-      .dacts { width: 100%; justify-content: flex-end; }
     }
     @media (max-width: 560px) {
       .steps, .grid, .duo, .notes { grid-template-columns: 1fr; }
@@ -692,7 +493,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
         "@type": "SoftwareApplication",
         "@id": "https://agenthydra.lunarwerx.com/#app",
         "name": "AgentHydra",
-        "description": "A local dashboard for every AI coding session on your machine. Live-tail Claude Code, Codex and OpenCode in a single list, keep isolated Claude and Codex instances straight about which account is which, and queue claude runs to fire now or on a schedule. The whole API is on MCP, so your agents drive the same state. One daemon, your browser, a tray icon. Local-first, apart from a small, opt-out update ping.",
+        "description": "One local window for every Claude Code chat on your PC, Claude Desktop’s included, with your projects, their dev servers and every Claude and Codex account’s quota. MCP for your agents. Free, MIT.",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Windows, macOS, Linux",
         "softwareVersion": "1.13.0",
@@ -704,15 +505,13 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
         },
         "image": "https://agenthydra.lunarwerx.com/og.png",
         "featureList": [
-          "One list, three tools",
-          "Isolated Claude instances",
-          "Codex gets its own windows",
-          "A composer that reaches the session",
-          "A queue you can walk away from",
-          "Runs that survive a restart",
-          "A rate limit is not a dead end",
-          "Handing a task to ChatGPT",
-          "Quick instance mode"
+          "Every Claude Code chat in one sidebar, grouped by project",
+          "New starts from your projects",
+          "Dev servers built in",
+          "Every Claude and Codex account in one table",
+          "CliMayte: hand work to your other accounts",
+          "Where the time and money went",
+          "MCP for your agents"
         ],
         "offers": {
           "@type": "Offer",
@@ -767,70 +566,14 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
         "@type": "FAQPage",
         "@id": "https://agenthydra.lunarwerx.com/#faq",
         "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Is AgentHydra free?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. AgentHydra is free and open source under the MIT license, and no account is needed to run it. There's no cloud service behind it and nothing to sign up for: it reads the local Claude, Codex and OpenCode stores already on your machine and serves a dashboard on localhost."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What AI coding tools does AgentHydra support?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "AgentHydra reads and lists sessions from Claude Code, Codex and OpenCode side by side, newest first, each badged with the tool that wrote it. Claude Code sessions come from your transcripts, Codex from its rollout JSONL files, and OpenCode CLI and Desktop share one local SQLite store, so both show up automatically."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I reply to a Codex or OpenCode session from AgentHydra?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No, only Claude sessions can be messaged back. AgentHydra can read and live-tail Codex and OpenCode conversations just like Claude's, but only Claude ships a CLI that can be handed a prompt, so Codex and OpenCode sessions open without a reply box instead of a send button that quietly does nothing."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is AgentHydra private, or does it send my data anywhere?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Not entirely. The one thing that leaves your machine on its own is a periodic update check against studio.connectionsapi.com: it sends the app version, a coarse OS tag, and a random per-install id, and the server derives a coarse location (country, region, city, timezone), your network's ASN, locale, and a truncated user agent from that request, but never an IP address, hostname, username, file path, account, or email. Set AGENTHYDRA_NO_PING=1 to opt out; the check then goes straight to GitHub's API, with no install id or telemetry. Otherwise AgentHydra is one daemon on loopback with your regular browser and a tray icon: no cloud service, no account to sign up for. The other thing that leaves is the optional ChatGPT handoff, which opens the provider and leaves the final upload to you."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What can my AI agents do through AgentHydra's MCP server?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "AgentHydra exposes its whole API over MCP stdio, so Claude Code, Claude Desktop or Cursor can drive the same state as the dashboard: sessions, the run queue, the scheduler, the auto-resume monitor, accounts, quota, and the Claude, CLI and Codex instance managers. Agents can also check an account's remaining quota before fanning out work."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Does AgentHydra work offline?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes, for reading and messaging: AgentHydra needs no network connection to list, tail, search or reply to sessions, since it only reads local transcript, rollout and SQLite files already on your machine. The claude CLI calls it dispatches still need whatever connectivity Claude itself requires, and the optional update check and ChatGPT handoff are both online-only and skippable."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How is AgentHydra different from tools like Crystal, Conductor or ccmanager?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Those tools launch new Claude Code or Codex sessions in fresh git worktrees so you can run several tasks in parallel. AgentHydra instead reads the sessions you already have across Claude Code, Codex and OpenCode in one browser dashboard, and adds a queue, scheduler, instance manager and MCP server on top, without needing a new worktree per session."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Do I need Bun installed to use AgentHydra?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. Bun is only needed to run AgentHydra from source (bun install, bun run build, bun run start). The packaged Windows .exe, and the one-executable Linux and macOS builds on the Releases page, bundle everything and need nothing else installed."
-            }
-          }
+          {"@type": "Question", "name": "Is AgentHydra free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. AgentHydra is free and open source under the MIT license, and no account is needed to run it. There is no cloud service behind it and nothing to sign up for: it reads the Claude, Codex and OpenCode files already on your machine and shows them in its own window."}},
+          {"@type": "Question", "name": "What AI coding tools does AgentHydra support?", "acceptedAnswer": {"@type": "Answer", "text": "Claude Code, including the chats Claude Desktop runs and plain CLI sessions, plus Codex and OpenCode. Claude chats can be replied to, moved between accounts and started from AgentHydra itself; Codex and OpenCode sessions are listed and readable."}},
+          {"@type": "Question", "name": "Can I reply to a Codex or OpenCode session from AgentHydra?", "acceptedAnswer": {"@type": "Answer", "text": "No, only Claude chats take a reply. Codex and OpenCode conversations open read-only, without a reply box, rather than with a send button that quietly does nothing."}},
+          {"@type": "Question", "name": "Is AgentHydra private, or does it send my data anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "It reads local files and talks to localhost. On its own it only checks for updates, through a LunarWerx relay of GitHub’s release feed, sending the app version, a coarse OS tag and a random install id; the server derives a coarse location and network from the request and never stores the IP. Set AGENTHYDRA_NO_PING=1 to send the check straight to GitHub with none of that."}},
+          {"@type": "Question", "name": "What can my AI agents do through AgentHydra’s MCP server?", "acceptedAnswer": {"@type": "Answer", "text": "The same things you can: list, search and read sessions, move chats between accounts, hand work to CliMayte, start and stop dev servers, manage Claude and Codex accounts, and check which account they run on and how much quota it has left before fanning out work. AgentHydra registers itself with Claude Code on every start."}},
+          {"@type": "Question", "name": "Does AgentHydra work offline?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, for reading: listing, searching and reading sessions needs no network, since it only reads files already on your machine. Claude itself still needs whatever connectivity it requires, and the update check is online-only and can be turned off."}},
+          {"@type": "Question", "name": "How is AgentHydra different from Conductor or Claude Squad?", "acceptedAnswer": {"@type": "Answer", "text": "Those tools start new Claude Code sessions in fresh git worktrees so several tasks run in parallel. AgentHydra works with the chats and accounts you already have, across Claude Code, Claude Desktop, Codex and OpenCode, and adds projects, dev servers, analytics, account management and MCP on top."}},
+          {"@type": "Question", "name": "Do I need Bun installed to use AgentHydra?", "acceptedAnswer": {"@type": "Answer", "text": "No. Bun is only needed to run it from source. The Windows download fetches the Bun it was built with on first run, checked against Bun’s published checksums, and fetches Claude Code when a chat first needs it."}}
         ]
       }
     ]
@@ -851,7 +594,6 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       <span class="lw-home-group"><a class="brand" href="/"><img src="icon.svg" alt="" /><span>AgentHydra</span></a></span>
       <div class="nav-links">
         <a class="hide-sm" href="#how">How it works</a>
-        <a class="hide-sm" href="#providers">Providers</a>
         <a class="hide-sm" href="#features">Features</a>
         <a class="hide-sm" href="#mcp">MCP</a>
         <a class="hide-sm" href="#install">Install</a>
@@ -866,9 +608,9 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
 
   <header class="hero">
     <div class="wrap hero-inner">
-      <span class="eyebrow"><span class="pulse"></span> Claude, Codex and OpenCode, on one localhost</span>
-      <h1>Every local AI coding session <span class="grad">in one tab</span></h1>
-      <p class="lede">Live-tails Claude Code, Codex and OpenCode in one list, keeps your isolated instances straight, and queues <code>claude</code> runs for now or 3am.</p>
+      <span class="eyebrow"><span class="pulse"></span> AgentHydra 2.0: one window for all of it</span>
+      <h1>Every AI coding chat <span class="grad">in one window</span></h1>
+      <p class="lede">Claude Code, Claude Desktop and the CLI in one sidebar, grouped by project, with your dev servers and every account’s quota beside them.</p>
       <div class="cta">
         <a class="btn btn-primary js-dl-primary" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v1.13.0/AgentHydra-1.13.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows">
           <svg class="js-dl-mark" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
@@ -877,367 +619,25 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
         <a class="btn btn-ghost" href="https://github.com/LunarWerxs/AgentHydra" target="_blank" rel="noopener">View source</a>
       </div>
       <p class="dl-platforms"><a data-tile="win" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v1.13.0/AgentHydra-1.13.0-windows-x64.exe" download><svg width="13" height="13" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>Windows</a> <a data-tile="mac" data-dl="mac-arm64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v1.13.0/AgentHydra-1.13.0-darwin-arm64.tar.gz" download><svg width="13" height="13" fill="currentColor" aria-hidden="true"><use href="#os-apple"/></svg>macOS</a> <a data-tile="linux" data-dl="linux-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v1.13.0/AgentHydra-1.13.0-linux-x64.tar.gz" download><svg width="13" height="13" fill="currentColor" aria-hidden="true"><use href="#os-linux"/></svg>Linux</a></p>
-      <p class="sub-note">Free &amp; open source (MIT) · no account needed to run it</p>
+      <p class="sub-note">The 2.0 window shown here is in preview on the <a href="https://github.com/LunarWerxs/AgentHydra/releases" target="_blank" rel="noopener" style="color:var(--brand-bright)">releases page</a>. Free &amp; open source (MIT), no account needed.</p>
     </div>
 
     <div class="wrap showcase">
       <div class="frame">
-        <div class="frame-bar">
-          <span class="tl tl-r"></span><span class="tl tl-y"></span><span class="tl tl-g"></span>
-          <span class="frame-url">localhost:7787</span>
-        </div>
-        <!-- A faithful, lightly interactive replica: click the tabs, the Settings/Queue
-             buttons, and the session rows. Decorative (the real app is linked above),
-             so it stays aria-hidden; every control is a non-focusable div/span. -->
-        <div class="app" aria-hidden="true">
-          <div class="app-top">
-            <img class="logo" src="icon.svg" alt="" />
-            <span class="app-name">AgentHydra</span>
-            <div class="app-tabs">
-              <span class="tab on" data-tab="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg><span class="tl-label">Sessions</span></span>
-              <span class="tab" data-tab="instances"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg><span class="tl-label">Instances</span></span>
-            </div>
-            <span class="spacer"></span>
-            <span class="running-ind"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>1 running</span>
-            <span class="btn-q" data-panel="queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>Queue<span class="qn">1</span></span>
-            <span class="icon-btn" data-panel="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></span>
-          </div>
-          <div class="app-body">
-            <!-- ── Sessions view ── -->
-            <div id="view-sessions" class="view on">
-            <div class="list">
-              <div class="list-tools">
-                <span class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search sessions…<svg class="filt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg></span>
-                <span class="itool"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></span>
-                <span class="itool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M10 4v16"/></svg></span>
-              </div>
-              <div class="list-scroll">
-                <div class="row sel" data-session="acme">
-                  <div class="rtop"><div class="title">Add retry and backoff to the API client</div><span class="pbadge claude">Claude</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>acme-checkout</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>feat/retry-backoff</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>47</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>5m ago</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>work</span></div>
-                </div>
-                <div class="row" data-session="ingest">
-                  <div class="rtop"><div class="title">Track down the memory leak in the worker pool</div><span class="pbadge codex">Codex</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>ingest-worker</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>main</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>31</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>22m ago</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>codex-work</span></div>
-                </div>
-                <div class="row" data-session="dashboard">
-                  <div class="rtop"><div class="title">Migrate the settings page to the design system</div><span class="pbadge claude">Claude</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>dashboard</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>redesign/settings</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>82</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>54m ago</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>personal</span></div>
-                </div>
-                <div class="row" data-session="data">
-                  <div class="rtop"><div class="title">Refactor the CSV importer for streaming</div><span class="pbadge opencode">OpenCode</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>data-tools</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>refactor/csv</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>26</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>1h ago</span></div>
-                </div>
-                <div class="row done" data-session="cli">
-                  <div class="rtop"><span class="done-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span><div class="title">Tidy up the CLI help output</div><span class="pbadge claude">Claude</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>pico-cli</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>main</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>39</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>2d ago</span></div>
-                </div>
-                <div class="row" data-session="payments">
-                  <div class="rtop"><div class="title">Wire up the Stripe webhook handlers</div><span class="pbadge claude">Claude</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>payments</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>feat/webhooks</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>63</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>2h ago</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>work</span></div>
-                </div>
-                <div class="row" data-session="billing">
-                  <div class="rtop"><div class="title">Fix the flaky auth test on CI</div><span class="pbadge codex">Codex</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>billing-service</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>fix/flaky-auth</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>19</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>4h ago</span></div>
-                  <div class="meta"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>codex-personal</span></div>
-                </div>
-              </div>
-            </div>
-            <div class="detail">
-              <div class="detail-head">
-                <div class="dmain">
-                  <div class="h">Add retry and backoff to the API client</div>
-                  <div class="sub"><span class="m">9e3779b1</span><span class="pbadge claude">Claude</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>C:\work\acme-checkout</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>6 turns shown</span></div>
-                </div>
-                <div class="dacts">
-                  <span class="dact" title="Show tool calls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z"/></svg></span>
-                  <span class="dact" title="Open the .jsonl in your editor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></span>
-                  <span class="dact" title="Download it under its real title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></span>
-                  <span class="dact" title="Copy the file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v12"/><path d="M18 6H10a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"/></svg></span>
-                  <span class="dact wide" title="Copy the session id">ID</span>
-                  <span class="dact" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>
-                </div>
-              </div>
-              <div class="chat">
-                <div class="msg u">Our API client hammers the server and gives up on the first 429. Add retry with exponential backoff, and treat 429 vs 529 differently.</div>
-                <div class="msg a">Good call. Those are two different failures. A 429 is your own rate cap and comes with a Retry-After header we should honour exactly. A 529 is the server being overloaded; that one we retry on our own schedule with backoff + jitter.</div>
-                <div class="msg u">Cap it at 5 attempts and make the jitter full, not equal.</div>
-                <div class="msg a">Done. Base delay 500ms, doubling each attempt, full jitter over [0, delay], hard cap of 5 tries. On a 429 I sleep for exactly Retry-After when present. Everything else fails fast.</div>
-                <div class="msg u">Nice. Add a test that a 529 then a 200 resolves, and that a 400 never retries.</div>
-                <div class="msg a">Added three: 529→200 resolves after one retry, a 429 waits for Retry-After, and a 400 throws with zero retries. All green.</div>
-              </div>
-              <div class="composer">
-                <div class="ta">Message this session. Enter to send, Shift+Enter for a new line</div>
-                <div class="ctrls">
-                  <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Model</span>
-                  <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6l3.5 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/></svg>Effort</span>
-                  <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>Permission</span>
-                  <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Alex Rivera</span>
-                  <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>acme-checkout</span>
-                  <span class="right">
-                    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>ChatGPT</span>
-                    <span class="split"><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>Queue</span><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></span>
-                    <span class="send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>Send</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            </div>
-
-            <!-- ── Instances view: Claude Desktop, Claude CLI and Codex, stacked ── -->
-            <div id="view-instances" class="view">
-              <div class="inst-scroll">
-              <div class="isec">
-              <div class="inst-tools">
-                <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg>Instances <span class="n">(4)</span></span>
-                <span class="grow"></span>
-                <span class="kebab" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span>
-                <span class="kebab" title="Refresh all usage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 12 8.5 8.5"/><path d="M20 12a8 8 0 1 0-16 0"/><circle cx="12" cy="12" r="10"/></svg></span>
-                <span class="add" title="Create instance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
-              </div>
-                <table class="itable">
-                  <thead>
-                    <tr>
-                      <th style="width:34px">●</th>
-                      <th>Name</th>
-                      <th>Instance account</th>
-                      <th class="hide-narrow">PID</th>
-                      <th class="hide-narrow">Uptime</th>
-                      <th class="hide-narrow">Memory</th>
-                      <th>Usage</th>
-                      <th class="hide-narrow">Plan</th>
-                      <th class="r">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="irow">
-                      <td><span class="iglyph" style="color:#5b9dd6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4.5 16.5-1.5 4 4-1.5 10-10a2.1 2.1 0 0 0-3-3Z"/><path d="m14 6 3 3"/></svg><span class="live"></span></span></td>
-                      <td><div class="iname">Alex Rivera</div><div class="idir">~/.claude-instances/work</div></td>
-                      <td><span class="abadge">Alex Rivera</span></td>
-                      <td class="mono hide-narrow">8412</td>
-                      <td class="hide-narrow">3h 34m</td>
-                      <td class="hide-narrow">2.5 GB</td>
-                      <td><span class="ubadge warn">72% wk</span></td>
-                      <td class="hide-narrow"><span class="plan">Max 20×</span></td>
-                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>Focus</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
-                    </tr>
-                    <tr class="irow">
-                      <td><span class="iglyph" style="color:#b06fd0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><span class="live"></span></span></td>
-                      <td><div class="iname">Sam Chen</div><div class="idir">~/.claude-instances/personal</div></td>
-                      <td><span class="abadge">Sam Chen</span></td>
-                      <td class="mono hide-narrow">6120</td>
-                      <td class="hide-narrow">51m</td>
-                      <td class="hide-narrow">1.4 GB</td>
-                      <td><span class="ubadge">26% wk</span></td>
-                      <td class="hide-narrow"><span class="plan">Pro</span></td>
-                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>Focus</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
-                    </tr>
-                    <tr class="irow">
-                      <td><span class="iglyph off" style="color:#4bd07a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3v6.5L4.2 18A2 2 0 0 0 6 21h12a2 2 0 0 0 1.8-3L15 9.5V3"/><path d="M8.5 3h7"/></svg></span></td>
-                      <td><div class="iname">Dana Woods</div><div class="idir">~/.claude-instances/research</div></td>
-                      <td><span class="abadge">Dana Woods</span></td>
-                      <td class="mono hide-narrow dim">-</td>
-                      <td class="hide-narrow dim">-</td>
-                      <td class="hide-narrow dim">-</td>
-                      <td><span class="ubadge">55% wk</span></td>
-                      <td class="hide-narrow"><span class="plan">Max</span></td>
-                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 3 14 9-14 9V3z"/></svg>Open</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
-                    </tr>
-                    <tr class="irow">
-                      <td><span class="iglyph off" style="color:#a1a1aa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 4v4"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg></span></td>
-                      <td><div class="iname">ci-runner</div><div class="idir">~/.claude-instances/ci-runner</div></td>
-                      <td><span class="abadge none">(not logged in)</span></td>
-                      <td class="mono hide-narrow dim">-</td>
-                      <td class="hide-narrow dim">-</td>
-                      <td class="hide-narrow dim">-</td>
-                      <td><span class="ubadge na">-</span></td>
-                      <td class="hide-narrow dim">-</td>
-                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 3 14 9-14 9V3z"/></svg>Open</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="isec">
-                <div class="inst-tools">
-                  <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></svg>CLI instances <span class="n">(1)</span></span>
-                  <span class="grow"></span>
-                  <span class="kebab" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span>
-                  <span class="add" title="Create CLI instance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
-                </div>
-                <table class="itable">
-                  <thead>
-                    <tr>
-                      <th style="width:34px">●</th>
-                      <th>Name</th>
-                      <th>Account</th>
-                      <th class="hide-narrow">Config dir</th>
-                      <th>Usage</th>
-                      <th class="r">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="irow">
-                      <td><span class="iglyph" style="color:#4bd07a"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg></span></td>
-                      <td><div class="iname">sandbox (CLI)</div></td>
-                      <td class="dim">No account</td>
-                      <td class="mono hide-narrow" style="font-size:10px">~/.claude-cli/sandbox</td>
-                      <td><span class="ubadge">41% wk</span></td>
-                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 3 14 9-14 9V3z"/></svg>Launch</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="isec">
-                <div class="inst-tools">
-                  <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m7 10 2.5 2L7 14"/><path d="M13 14h4"/></svg>Codex instances <span class="n">(2)</span></span>
-                  <span class="grow"></span>
-                  <span class="kebab" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span>
-                  <span class="add" title="New Codex instance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
-                </div>
-                <table class="itable">
-                  <thead>
-                    <tr>
-                      <th style="width:34px">●</th>
-                      <th>Name</th>
-                      <th>Account</th>
-                      <th class="hide-narrow">CODEX_HOME</th>
-                      <th class="hide-narrow">Uptime</th>
-                      <th class="r">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="irow">
-                      <td><span class="iglyph" style="color:#7fb4d8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m7 10 2.5 2L7 14"/><path d="M13 14h4"/></svg><span class="live"></span></span></td>
-                      <td><div class="iname">codex-work</div></td>
-                      <td><span class="abadge">alex@acme.com</span></td>
-                      <td class="mono hide-narrow" style="font-size:10px">~/.codex-instances/work</td>
-                      <td class="hide-narrow">1h 08m</td>
-                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>Focus</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
-                    </tr>
-                    <tr class="irow">
-                      <td><span class="iglyph off" style="color:#a1a1aa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m7 10 2.5 2L7 14"/><path d="M13 14h4"/></svg></span></td>
-                      <td><div class="iname">codex-personal</div></td>
-                      <td><span class="abadge">sam@gmail.com</span></td>
-                      <td class="mono hide-narrow" style="font-size:10px">~/.codex-instances/personal</td>
-                      <td class="hide-narrow dim">-</td>
-                      <td class="r"><span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 3 14 9-14 9V3z"/></svg>Open</span> <span class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></span></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              </div>
-            </div>
-
-            <!-- overlay + slide-in panels -->
-            <div class="scrim"></div>
-
-            <div class="panel" id="panel-settings">
-              <div class="panel-head"><span>Settings</span><span class="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></div>
-              <div class="panel-body">
-                <div class="sgroup">
-                  <div class="gt">Appearance</div>
-                  <div class="srow"><span class="lbl">Theme</span><span class="seg"><span>Light</span><span class="on">Dark</span><span>System</span></span></div>
-                  <div class="srow"><span class="lbl">Show tooltips</span><span class="switch on"></span></div>
-                  <div class="srow"><span><span class="lbl">Quick Instances shortcut</span><div class="desc">Drop a one-click launcher on the desktop.</div></span><span class="mini">Create</span></div>
-                  <div class="gt">Providers</div>
-                  <div class="srow"><span><span class="lbl">Claude</span><div class="desc">Code and Desktop transcripts.</div></span><span class="switch on"></span></div>
-                  <div class="srow"><span><span class="lbl">Codex</span><div class="desc">Rollout files from the CLI and Desktop.</div></span><span class="switch on"></span></div>
-                  <div class="srow"><span><span class="lbl">OpenCode</span><div class="desc">The local session database.</div></span><span class="switch on"></span></div>
-                  <div class="gt">Usage</div>
-                  <div class="srow"><span><span class="lbl">Auto-refresh usage</span><div class="desc">Keep quota numbers current in the background.</div></span><span class="switch on"></span></div>
-                  <div class="srow"><span class="lbl">Refresh every (min)</span><span class="snum">15</span></div>
-                  <div class="gt">Updates</div>
-                  <div class="srow"><span><span class="lbl">Check automatically</span><div class="desc">Off unless you turn it on.</div></span><span class="switch"></span></div>
-                  <div class="srow"><span class="lbl">Current version</span><span class="sver mono" style="color:var(--muted);font-size:12px">0.14.0 · up to date</span></div>
-                  <div class="gt">Cloud sync</div>
-                  <div class="srow"><span class="lbl">Sync settings with Connections</span><span class="mini">Connect</span></div>
-                  <div class="gt">Scheduler</div>
-                  <div class="srow"><span><span class="lbl">Enabled</span><div class="desc">Work through the queue on its own.</div></span><span class="switch"></span></div>
-                  <div class="srow"><span class="lbl">Max concurrent</span><span class="snum">3</span></div>
-                  <div class="srow"><span class="lbl">Spacing (s)</span><span class="snum">20</span></div>
-                  <div class="gt">Auto-resume monitor</div>
-                  <div class="srow"><span><span class="lbl">Enabled</span><div class="desc">Pick sessions back up once a 5-hour limit resets.</div></span><span class="switch"></span></div>
-                  <div class="srow"><span class="lbl">Stop above weekly</span><span class="snum">80%</span></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="panel" id="panel-queue">
-              <div class="panel-head"><span>Run queue</span><span class="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span></div>
-              <div class="q-tools">
-                <span class="qcount">4 items <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
-                <span class="grow" style="margin-left:auto"></span>
-                <span class="kebab" title="Scheduler off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg></span>
-                <span class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m2 5 8 7-8 7V5Z"/><path d="m13 5 8 7-8 7V5Z"/></svg>Run due (2)</span>
-                <span class="add" title="New run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
-              </div>
-              <div class="panel-body">
-                <div class="qitem running">
-                  <div class="qhead">
-                    <div><div class="qt">Add retry and backoff to the API client</div><div class="qprompt">resume</div></div>
-                    <span class="qstat run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>Running</span>
-                    <span class="qrun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>Stop</span>
-                  </div>
-                  <div class="qmeta"><span class="qtag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>acme-checkout</span><span class="qtag">opus</span><span class="qtag">high</span><span class="qicons"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4.5 16.5-1.5 4 4-1.5 10-10a2.1 2.1 0 0 0-3-3Z"/></svg></span><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6v14h12V6"/></svg></span></span></div>
-                </div>
-                <div class="qitem">
-                  <div class="qhead">
-                    <div><div class="qt">Regenerate the API client</div><div class="qprompt">resume</div></div>
-                    <span class="qstat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Queued</span>
-                    <span class="qrun"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m6 3 14 9-14 9V3z"/></svg>Run</span>
-                  </div>
-                  <div class="qmeta"><span class="qtag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>atlas-api</span><span class="qtag">sonnet</span><span class="qtag">medium</span><span class="qicons"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4.5 16.5-1.5 4 4-1.5 10-10a2.1 2.1 0 0 0-3-3Z"/></svg></span><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6v14h12V6"/></svg></span></span></div>
-                </div>
-                <div class="qitem">
-                  <div class="qhead">
-                    <div><div class="qt">Migrate the settings page to the design system</div><div class="qprompt">new chat</div></div>
-                    <span class="qstat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Queued</span>
-                    <span class="qrun"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m6 3 14 9-14 9V3z"/></svg>Run</span>
-                  </div>
-                  <div class="qmeta"><span class="qtag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>dashboard</span><span class="qtag when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>runs 3:00 AM</span><span class="qtag">sonnet</span><span class="qicons"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4.5 16.5-1.5 4 4-1.5 10-10a2.1 2.1 0 0 0-3-3Z"/></svg></span><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6v14h12V6"/></svg></span></span></div>
-                </div>
-                <div class="qfoot">
-                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>Show 1 finished</span>
-                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6v14h12V6"/></svg>Clear finished</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <img src="img/window.webp" width="2160" height="1350" alt="AgentHydra's window: the sidebar lists chats grouped by project, and the open chat shows its to-dos, a permission prompt and its changes" />
       </div>
+      <p class="sub-note" style="text-align:center">Screenshots use demo data.</p>
     </div>
   </header>
 
   <main>
   <section id="how" class="wrap">
     <div class="sec-eyebrow code">// <b>how it works</b></div>
-    <h2>One daemon, reading what your tools already wrote</h2>
+    <h2>It reads what your tools already wrote</h2>
     <div class="steps">
-      <div class="step"><span class="num n1">1</span><h3>Start the daemon</h3><p>The tray app or <code>bun run start</code>, then <code>localhost:7787</code>. No console window.</p></div>
-      <div class="step"><span class="num n2">2</span><h3>It finds what is already there</h3><p>Claude transcripts, Codex rollouts, the OpenCode database, every isolated instance. Nothing to import.</p></div>
-      <div class="step"><span class="num n3">3</span><h3>Reply, queue, or hand it over</h3><p>Reply to a Claude session, queue <code>claude</code> runs, or let your agents drive it over MCP.</p></div>
-    </div>
-
-    <div class="term" role="img" aria-label="Terminal showing bun run start booting the AgentHydra daemon. It reads Claude, Codex and OpenCode session stores, finds four Claude Desktop instances and two Codex instances, leaves the scheduler and auto-resume monitor off, and serves the dashboard on localhost port 7787.">
-      <div class="term-bar">
-        <span class="tl tl-r"></span><span class="tl tl-y"></span><span class="tl tl-g"></span>
-        <span class="term-title">agenthydra: first run</span>
-      </div>
-      <div class="term-body">
-<div class="term-line"><span class="t-prompt">$</span> <span class="t-cmd">bun run start</span></div>
-<div class="term-line"><span class="t-dim">[agenthydra]</span> <span class="t-out">claude   ~/.claude/projects …</span> <span class="t-ok">128 sessions</span></div>
-<div class="term-line"><span class="t-dim">[agenthydra]</span> <span class="t-out">codex    ~/.codex/sessions …</span> <span class="t-ok">41 sessions</span></div>
-<div class="term-line"><span class="t-dim">[agenthydra]</span> <span class="t-out">opencode local database …</span> <span class="t-ok">17 sessions</span></div>
-<div class="term-line"><span class="t-dim">[agenthydra]</span> <span class="t-out">instances …</span> <span class="t-ok">4 Claude</span> <span class="t-dim">·</span> <span class="t-ok">2 Codex</span> <span class="t-dim">·</span> <span class="t-ok">1 CLI</span></div>
-<div class="term-line"><span class="t-dim">[agenthydra]</span> <span class="t-out">scheduler</span> <span class="t-warn">off</span> <span class="t-dim">· auto-resume</span> <span class="t-warn">off</span> <span class="t-dim">(opt in from Settings)</span></div>
-<div class="term-line"><span class="t-dim">[agenthydra]</span> <span class="t-out">dashboard →</span> <span class="t-url">http://localhost:7787</span><span class="caret" aria-hidden="true"></span></div>
-      </div>
+      <div class="step"><span class="num n1">1</span><h3>Install and open</h3><p>One download. AgentHydra opens its own window, with no console and no browser tab.</p></div>
+      <div class="step"><span class="num n2">2</span><h3>It finds what is there</h3><p>Claude Code, Claude Desktop and CLI chats, Codex and OpenCode sessions, every signed-in account. Nothing to import.</p></div>
+      <div class="step"><span class="num n3">3</span><h3>Work from one place</h3><p>Reply, start a chat in any project, or hand the pieces to your other accounts.</p></div>
     </div>
   </section>
 
@@ -1245,21 +645,19 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
 
   <section id="providers" class="wrap">
     <div class="sec-eyebrow code">// <b>what it reads, and what it can drive</b></div>
-    <h2>Three tools, and an honest line between them</h2>
-    <p class="sec-lede">All three histories, one list. Only Claude takes instructions back, because only Claude ships a CLI you can hand a prompt.</p>
+    <h2>Every tool’s history, one honest line</h2>
+    <p class="sec-lede">All three in one sidebar. You can reply to Claude; Codex and OpenCode are read-only.</p>
     <div class="ptable-wrap">
       <table class="ptable">
         <thead>
           <tr><th>What you can do</th><th><span class="pdot claude"></span>Claude</th><th><span class="pdot codex"></span>Codex</th><th><span class="pdot opencode"></span>OpenCode</th></tr>
         </thead>
         <tbody>
-          <tr><td>Read and live-tail the conversation</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr>
-          <tr><td>Search and filter alongside everything else</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr>
-          <tr><td>Type back into the session</td><td class="y">Yes</td><td class="n">No</td><td class="n">No</td></tr>
-          <tr><td>Message several sessions at once</td><td class="y">Yes</td><td class="n">No</td><td class="n">No</td></tr>
-          <tr><td>Queue and schedule runs</td><td class="y">Yes</td><td class="n">No</td><td class="n">No</td></tr>
-          <tr><td>Isolated instances, per account</td><td class="y">Desktop + CLI</td><td class="y">Desktop + CLI</td><td class="n">Not applicable</td></tr>
-          <tr><td>Remaining quota per account</td><td class="y">Yes</td><td class="n">No</td><td class="n">No</td></tr>
+          <tr><td>Read and follow live</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr>
+          <tr><td>Search alongside everything else</td><td class="y">Yes</td><td class="y">Yes</td><td class="y">Yes</td></tr>
+          <tr><td>Reply in the chat</td><td class="y">Yes</td><td class="n">No</td><td class="n">No</td></tr>
+          <tr><td>Move a chat to another account</td><td class="y">Yes</td><td class="n">No</td><td class="n">No</td></tr>
+          <tr><td>Accounts with their quota</td><td class="y">Desktop + CLI</td><td class="y">Desktop + CLI</td><td class="n">Not applicable</td></tr>
           <tr><td>Open, download or copy the raw file</td><td class="y">Yes</td><td class="y">Yes</td><td class="n">Rendered from its database</td></tr>
         </tbody>
       </table>
@@ -1271,85 +669,84 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
 
   <section id="features" class="wrap">
     <div class="sec-eyebrow code">// <b>what you get</b></div>
-    <h2>The part your terminal window is missing</h2>
-    <div class="grid">
+    <h2>What is in the window</h2>
+    <div class="shots">
+      <div class="shot-row">
+        <div class="shot-text"><h3>New starts from your projects</h3><p>A grid of your projects, each with its git state and how many chats are open in it, the busiest first. A chat started in a parent folder is filed under the project it worked in.</p></div>
+        <div class="shot-img"><img src="img/new.webp" loading="lazy" alt="The New screen: a grid of projects, two with a count of open chats" /></div>
+      </div>
+      <div class="shot-row flip">
+        <div class="shot-text"><h3>Every account in one table</h3><p>Each Claude and Codex account with its plan, 5-hour and weekly quota and when it resets. Open, quit, create and rename them.</p></div>
+        <div class="shot-img"><img src="img/accounts.webp" loading="lazy" alt="Every Claude Desktop, Codex and CLI account in one table with its 5-hour and weekly usage" /></div>
+      </div>
+      <div class="shot-row">
+        <div class="shot-text"><h3>Where the time and money went</h3><p>Cost by day, model, project and account, and what wasted it: unused MCP servers, oversized contexts, commands that kept failing.</p></div>
+        <div class="shot-img"><img src="img/analytics.webp" loading="lazy" alt="The analytics view: tokens, cost by day, model, project and account" /></div>
+      </div>
+    </div>
+    <div class="grid" style="margin-top:56px">
       <div class="card">
-        <div class="ico c2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg></div>
-        <h3>One list, three tools</h3>
-        <p>Every conversation, newest first, badged by tool. Filter, click, watch it stream.</p>
+        <div class="ico c4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v6H3z"/><path d="M3 13h18v6H3z"/><path d="M7 8h.01M7 16h.01"/></svg></div>
+        <h3>Dev servers, built in</h3>
+        <p>Start, stop and watch your projects’ local servers, with logs, errors, CPU and memory. Open one beside the chat.</p>
       </div>
       <div class="card">
-        <div class="ico c1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 8.5l-5 3Z"/></svg></div>
-        <h3>Isolated Claude instances</h3>
-        <p>Every Claude Desktop profile with its account, plan and live usage. Open, focus, quit, rename, recolour.</p>
+        <div class="ico c2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><path d="M8 21H3v-5"/><path d="M3 21l7-7"/></svg></div>
+        <h3>CliMayte</h3>
+        <p>Hand a task’s pieces to your other Claude CLI accounts. A worker moves on when its account runs out.</p>
       </div>
       <div class="card">
-        <div class="ico c4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m7 10 2.5 2L7 14"/><path d="M13 14h4"/></svg></div>
-        <h3>Codex gets its own windows</h3>
-        <p>Its own <code>CODEX_HOME</code> per instance, so work and personal OpenAI logins run side by side.</p>
-      </div>
-      <div class="card">
-        <div class="ico c3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>
-        <h3>A composer that reaches the session</h3>
-        <p>Type at the bottom of a transcript and it reaches that session. Send, queue, schedule, or fan out to several.</p>
+        <div class="ico c1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div>
+        <h3>Move a chat, history and all</h3>
+        <p>Out of quota on one account? Move the chat to another and carry on.</p>
       </div>
       <div class="card">
         <div class="ico c5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></div>
-        <h3>A queue you can walk away from</h3>
-        <p>Each run carries its own prompt, directory, model and account. Queue it, rate-limit it, or set it for 3am.</p>
+        <h3>Background tasks in view</h3>
+        <p>Every running command, workflow and worker in one panel, each with Stop.</p>
       </div>
       <div class="card">
-        <div class="ico c6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
-        <h3>Runs that survive a restart</h3>
-        <p>A detached supervisor, so quitting the app does not kill what is in flight.</p>
+        <div class="ico c3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
+        <h3>Two PCs, one sidebar</h3>
+        <p>With Login sync, your other PC’s chats are listed too.</p>
       </div>
       <div class="card">
-        <div class="ico c1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6.36 6.36 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></div>
-        <h3>A rate limit is not a dead end</h3>
-        <p>Sessions stopped by a 5-hour limit resume when the window resets. Gated on weekly usage, and off by default.</p>
-      </div>
-      <div class="card">
-        <div class="ico c2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></div>
-        <h3>Handing a task to ChatGPT</h3>
-        <p>Packs the task and repo into a bounded Markdown file and opens ChatGPT. Secrets left out; you press submit.</p>
-      </div>
-      <div class="card">
-        <div class="ico c3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-3 8h6l-3 12"/></svg></div>
-        <h3>Quick instance mode</h3>
-        <p><code>--instances</code> skips everything but a start/focus/stop window, on its own port.</p>
+        <div class="ico c6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <h3>Nothing runs headless</h3>
+        <p>Every run is a chat you can see and steer.</p>
       </div>
     </div>
   </section>
 
   <section id="mcp" class="wrap">
-    <div class="sec-eyebrow code">// <b>one daemon, two front doors</b></div>
+    <div class="sec-eyebrow code">// <b>one app, two front doors</b></div>
     <h2>Built for you and your agents</h2>
     <div class="duo">
       <div class="duo-card">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
-        <h3>You get a dashboard</h3>
-        <p>Sessions, instances, queue and accounts, in your regular browser.</p>
+        <h3>You get a window</h3>
+        <p>Chats, projects, dev servers and accounts, in one native window.</p>
       </div>
       <div class="duo-card agent">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M12 8V4"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/><path d="M2 13v2M22 13v2"/></svg></div>
         <h3>Your agents get MCP</h3>
-        <p>The whole API on MCP stdio, so Claude Code, Claude Desktop or Cursor drive the exact state you click.</p>
+        <p>The same state over MCP. AgentHydra registers itself with Claude Code, so a new session has its tools.</p>
       </div>
     </div>
 
     <div class="tool-strip">
-      <div class="tool" style="color:#dd7e56"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg><span class="tn">sessions</span><span class="td">list_sessions<br />get_session<br />tail_session</span></div>
-      <div class="tool" style="color:#e0a24f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg><span class="tn">queue</span><span class="td">add_queue_item<br />run_queue_item<br />get_run_events</span></div>
-      <div class="tool" style="color:#4bd07a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="tn">timing</span><span class="td">get_scheduler<br />set_scheduler<br />set_monitor</span></div>
+      <div class="tool" style="color:#dd7e56"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg><span class="tn">sessions</span><span class="td">list_sessions<br />search_sessions<br />tail_session</span></div>
+      <div class="tool" style="color:#e0a24f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg><span class="tn">chats</span><span class="td">move_chat<br />fan_out<br />archive_desktop_chat</span></div>
+      <div class="tool" style="color:#4bd07a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><path d="M8 21H3v-5"/><path d="M3 21l7-7"/></svg><span class="tn">climayte</span><span class="td">climayte_run<br />climayte_status<br />climayte_send</span></div>
       <div class="tool" style="color:#5b9dd6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg><span class="tn">instances</span><span class="td">list_instances<br />launch_instance<br />quit_instance</span></div>
-      <div class="tool" style="color:#7fb4d8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m7 10 2.5 2L7 14"/><path d="M13 14h4"/></svg><span class="tn">codex</span><span class="td">list_codex_instances<br />create_codex_instance<br />launch_codex_instance</span></div>
-      <div class="tool" style="color:#e0685c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="10"/></svg><span class="tn">usage</span><span class="td">check_usage<br />check_my_usage<br />usage_budget</span></div>
+      <div class="tool" style="color:#7fb4d8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18v6H3z"/><path d="M3 13h18v6H3z"/><path d="M7 8h.01M7 16h.01"/></svg><span class="tn">dev servers</span><span class="td">dev_servers</span></div>
+      <div class="tool" style="color:#e0685c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="10"/></svg><span class="tn">usage</span><span class="td">whoami<br />check_my_usage<br />usage_budget</span></div>
     </div>
 
     <div class="code-window">
       <div class="code-bar">
         <span class="tl tl-r"></span><span class="tl tl-y"></span><span class="tl tl-g"></span>
-        <span class="code-filename">claude_desktop_config.json</span>
+        <span class="code-filename">~/.claude.json</span>
         <button class="copy-btn" type="button" id="copyMcp" aria-label="Copy the MCP config">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           <span>Copy</span>
@@ -1358,8 +755,8 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
 <pre class="code-body"><code id="mcpCode">{
   <span class="tok-key">"mcpServers"</span><span class="tok-punc">:</span> {
     <span class="tok-key">"agenthydra"</span><span class="tok-punc">:</span> {
-      <span class="tok-key">"command"</span><span class="tok-punc">:</span> <span class="tok-str">"bun"</span><span class="tok-punc">,</span>
-      <span class="tok-key">"args"</span><span class="tok-punc">:</span> [<span class="tok-str">"run"</span><span class="tok-punc">,</span> <span class="tok-str">"--cwd"</span><span class="tok-punc">,</span> <span class="tok-str">"&lt;path-to-agenthydra&gt;"</span><span class="tok-punc">,</span> <span class="tok-str">"mcp"</span>]
+      <span class="tok-key">"type"</span><span class="tok-punc">:</span> <span class="tok-str">"http"</span><span class="tok-punc">,</span>
+      <span class="tok-key">"url"</span><span class="tok-punc">:</span> <span class="tok-str">"http://127.0.0.1:7787/api/mcp"</span>
     }
   }
 }</code></pre>
@@ -1374,7 +771,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
     <p class="sec-lede">An agent can read an account's remaining quota before a heavy fan-out, and route work to whichever account has the most left.</p>
     <div class="quota">
       <div class="meters" role="img" aria-label="Quota meters: session 5-hour window at 12 percent, weekly across all models at 63 percent which is the binding cap, and weekly Opus at 41 percent.">
-        <div class="mhead"><span class="dotg"></span> check_usage → work@acme.com</div>
+        <div class="mhead"><span class="dotg"></span> check_usage → work@example.com</div>
         <div class="meter">
           <div class="mlab"><span class="k">Session (5h)</span><span class="v">12%</span></div>
           <div class="track"><div class="fill low" style="width:12%"></div></div>
@@ -1391,6 +788,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       </div>
       <div>
         <h3 style="margin:0 0 10px;font-size:1.12rem;font-weight:640">Pace the fan-out, don't crash into the wall</h3>
+        <p style="margin:0;color:var(--muted)">The weekly cap is the one that binds, so an agent shrinks the job before it gets there.</p>
       </div>
     </div>
   </section>
@@ -1424,21 +822,21 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       </div>
     </div>
     <p class="os-foot"><span class="js-app-version">v1.13.0</span> · <a href="https://github.com/LunarWerxs/AgentHydra/releases" target="_blank" rel="noopener">all releases</a></p>
-    <p class="sub-note" style="margin-top:16px">Or from source with <a href="https://bun.sh" target="_blank" rel="noopener" style="color:var(--brand-bright)">Bun</a>. Either way the dashboard is at <code>localhost:7787</code>, loopback only.</p>
+    <p class="sub-note" style="margin-top:16px">Or from source with <a href="https://bun.sh" target="_blank" rel="noopener" style="color:var(--brand-bright)">Bun</a>. Everything stays on loopback.</p>
 
 
     <div class="notes">
       <div class="note-item">
-        <span class="nk">Trying it out</span>
-        <p><code>AGENTHYDRA_FAKE=1</code> swaps in a harmless stand-in, so nothing touches your quota or repos.</p>
+        <span class="nk">What it installs</span>
+        <p>Nothing else by hand: it fetches Bun on first run, and Claude Code when a chat first needs it.</p>
       </div>
       <div class="note-item">
         <span class="nk">What you need</span>
-        <p>The <code>claude</code> CLI for dispatch; Claude Desktop for instances. Codex and OpenCode optional.</p>
+        <p>Claude Code or Claude Desktop for the Claude side. Codex and OpenCode are optional.</p>
       </div>
       <div class="note-item warn">
         <span class="nk">Where it is rough</span>
-        <p>Tray launcher is Windows only; macOS and Linux builds are unverified. Instance management needs the classic Claude Desktop installer, not MSIX.</p>
+        <p>Built and used on Windows; the macOS and Linux builds are unverified. Managing Claude Desktop accounts needs its classic installer, not MSIX.</p>
       </div>
     </div>
   </section>
@@ -1468,26 +866,22 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
     <div class="grid">
       <div class="card">
         <h3>Separate terminal windows</h3>
-        <p>One terminal each, alt-tabbed, history scattered. Putting it in one list is the whole point.</p>
+        <p>One terminal each, alt-tabbed, history scattered. One sidebar is the whole point.</p>
       </div>
       <div class="card">
-        <h3>Crystal (now Nimbalyst)</h3>
-        <p>Spins up parallel sessions in fresh git worktrees. AgentHydra spins up nothing; it reads what you already have.</p>
+        <h3>Claude Desktop on its own</h3>
+        <p>One account’s chats. AgentHydra shows every account’s, the CLI’s and the other tools’, side by side.</p>
       </div>
       <div class="card">
-        <h3>Conductor</h3>
-        <p>Mac-only worktree launcher for parallel agents. AgentHydra runs everywhere and reads existing sessions.</p>
-      </div>
-      <div class="card">
-        <h3>ccmanager</h3>
-        <p>A terminal UI for worktree sessions. AgentHydra is a browser dashboard plus MCP, with a queue and quota checks.</p>
+        <h3>Conductor, Claude Squad</h3>
+        <p>They start new sessions in fresh git worktrees. AgentHydra works with the ones you already have.</p>
       </div>
     </div>
   </section>
 
   <section class="wrap foot-cta">
     <h2>Stop alt-tabbing to remember what is running</h2>
-    <p>One daemon. Every session in one list, every instance in one table, an MCP door for your agents.</p>
+    <p>One window. Every chat, every project, every account, and an MCP door for your agents.</p>
     <a class="btn btn-primary js-dl-primary" data-dl="win-x64" href="https://github.com/LunarWerxs/AgentHydra/releases/download/v1.13.0/AgentHydra-1.13.0-windows-x64.exe" download aria-label="Download AgentHydra for Windows">
       <svg class="js-dl-mark" width="16" height="16" fill="currentColor" aria-hidden="true"><use href="#os-win"/></svg>
       <span class="js-dl-label">Download for Windows</span>
@@ -1501,35 +895,35 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
     <div class="faq-list">
             <details class="faq-item">
         <summary>Is AgentHydra free?</summary>
-        <p class="faq-a">Yes. AgentHydra is free and open source under the MIT license, and no account is needed to run it. There's no cloud service behind it and nothing to sign up for: it reads the local Claude, Codex and OpenCode stores already on your machine and serves a dashboard on localhost.</p>
+        <p class="faq-a">Yes. AgentHydra is free and open source under the MIT license, and no account is needed to run it. There is no cloud service behind it and nothing to sign up for: it reads the Claude, Codex and OpenCode files already on your machine and shows them in its own window.</p>
       </details>
             <details class="faq-item">
         <summary>What AI coding tools does AgentHydra support?</summary>
-        <p class="faq-a">AgentHydra reads and lists sessions from Claude Code, Codex and OpenCode side by side, newest first, each badged with the tool that wrote it. Claude Code sessions come from your transcripts, Codex from its rollout JSONL files, and OpenCode CLI and Desktop share one local SQLite store, so both show up automatically.</p>
+        <p class="faq-a">Claude Code, including the chats Claude Desktop runs and plain CLI sessions, plus Codex and OpenCode. Claude chats can be replied to, moved between accounts and started from AgentHydra itself; Codex and OpenCode sessions are listed and readable.</p>
       </details>
             <details class="faq-item">
         <summary>Can I reply to a Codex or OpenCode session from AgentHydra?</summary>
-        <p class="faq-a">No, only Claude sessions can be messaged back. AgentHydra can read and live-tail Codex and OpenCode conversations just like Claude's, but only Claude ships a CLI that can be handed a prompt, so Codex and OpenCode sessions open without a reply box instead of a send button that quietly does nothing.</p>
+        <p class="faq-a">No, only Claude chats take a reply. Codex and OpenCode conversations open read-only, without a reply box, rather than with a send button that quietly does nothing.</p>
       </details>
             <details class="faq-item">
         <summary>Is AgentHydra private, or does it send my data anywhere?</summary>
-        <p class="faq-a">Not entirely. The one thing that leaves your machine on its own is a periodic update check against studio.connectionsapi.com: it sends the app version, a coarse OS tag, and a random per-install id, and the server derives a coarse location (country, region, city, timezone), your network's ASN, locale, and a truncated user agent from that request, but never an IP address, hostname, username, file path, account, or email. Set AGENTHYDRA_NO_PING=1 to opt out; the check then goes straight to GitHub's API, with no install id or telemetry. Otherwise AgentHydra is one daemon on loopback with your regular browser and a tray icon: no cloud service, no account to sign up for. The other thing that leaves is the optional ChatGPT handoff, which opens the provider and leaves the final upload to you.</p>
+        <p class="faq-a">It reads local files and talks to localhost. On its own it only checks for updates, through a LunarWerx relay of GitHub’s release feed, sending the app version, a coarse OS tag and a random install id; the server derives a coarse location and network from the request and never stores the IP. Set AGENTHYDRA_NO_PING=1 to send the check straight to GitHub with none of that.</p>
       </details>
             <details class="faq-item">
-        <summary>What can my AI agents do through AgentHydra's MCP server?</summary>
-        <p class="faq-a">AgentHydra exposes its whole API over MCP stdio, so Claude Code, Claude Desktop or Cursor can drive the same state as the dashboard: sessions, the run queue, the scheduler, the auto-resume monitor, accounts, quota, and the Claude, CLI and Codex instance managers. Agents can also check an account's remaining quota before fanning out work.</p>
+        <summary>What can my AI agents do through AgentHydra’s MCP server?</summary>
+        <p class="faq-a">The same things you can: list, search and read sessions, move chats between accounts, hand work to CliMayte, start and stop dev servers, manage Claude and Codex accounts, and check which account they run on and how much quota it has left before fanning out work. AgentHydra registers itself with Claude Code on every start.</p>
       </details>
             <details class="faq-item">
         <summary>Does AgentHydra work offline?</summary>
-        <p class="faq-a">Yes, for reading and messaging: AgentHydra needs no network connection to list, tail, search or reply to sessions, since it only reads local transcript, rollout and SQLite files already on your machine. The <code>claude</code> CLI calls it dispatches still need whatever connectivity Claude itself requires, and the optional update check and ChatGPT handoff are both online-only and skippable.</p>
+        <p class="faq-a">Yes, for reading: listing, searching and reading sessions needs no network, since it only reads files already on your machine. Claude itself still needs whatever connectivity it requires, and the update check is online-only and can be turned off.</p>
       </details>
             <details class="faq-item">
-        <summary>How is AgentHydra different from tools like Crystal, Conductor or ccmanager?</summary>
-        <p class="faq-a">Those tools launch new Claude Code or Codex sessions in fresh git worktrees so you can run several tasks in parallel. AgentHydra instead reads the sessions you already have across Claude Code, Codex and OpenCode in one browser dashboard, and adds a queue, scheduler, instance manager and MCP server on top, without needing a new worktree per session.</p>
+        <summary>How is AgentHydra different from Conductor or Claude Squad?</summary>
+        <p class="faq-a">Those tools start new Claude Code sessions in fresh git worktrees so several tasks run in parallel. AgentHydra works with the chats and accounts you already have, across Claude Code, Claude Desktop, Codex and OpenCode, and adds projects, dev servers, analytics, account management and MCP on top.</p>
       </details>
             <details class="faq-item">
         <summary>Do I need Bun installed to use AgentHydra?</summary>
-        <p class="faq-a">No. Bun is only needed to run AgentHydra from source (<code>bun install</code>, <code>bun run build</code>, <code>bun run start</code>). The packaged Windows <code>.exe</code>, and the one-executable Linux and macOS builds on the Releases page, bundle everything and need nothing else installed.</p>
+        <p class="faq-a">No. Bun is only needed to run it from source. The Windows download fetches the Bun it was built with on first run, checked against Bun’s published checksums, and fetches Claude Code when a chat first needs it.</p>
       </details>
     </div>
   </section>
@@ -1539,7 +933,7 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
     <div class="wrap foot-inner">
       <div class="foot-brand">
         <img src="icon.svg" alt="" />
-        <span>AgentHydra: every local AI coding session in one tab</span>
+        <span>AgentHydra: every AI coding chat in one window</span>
       </div>
       <div class="foot-links">
         <a href="https://github.com/LunarWerxs/AgentHydra" target="_blank" rel="noopener">GitHub</a>
@@ -1548,12 +942,12 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
         <a href="https://github.com/LunarWerxs/AgentHydra/releases" target="_blank" rel="noopener">Releases</a>
       </div>
       <div class="foot-legal">
-        MIT licensed · v0.38.3 · Built by <a href="https://lunarwerx.com/" target="_blank" rel="noopener">LunarWerx</a>
+        MIT licensed · Built by <a href="https://lunarwerx.com/" target="_blank" rel="noopener">LunarWerx</a>
       </div>
     </div>
     <div class="wrap foot-meta">
-      <span class="foot-siblings">More from LunarWerx: <a href="https://repoyeti.com/" target="_blank" rel="noopener">RepoYeti</a> · <a href="https://devwebui.lunarwerx.com/" target="_blank" rel="noopener">DevWebUI</a> · <a href="https://redesign.lunarwerx.com/" target="_blank" rel="noopener">ReDesign</a> · <a href="https://sagethumbs.lunarwerx.com/" target="_blank" rel="noopener">SageThumbs</a> · <a href="https://quickdictate.lunarwerx.com/" target="_blank" rel="noopener">QuickDictate</a></span>
-      <span class="foot-updated">Last updated: 2026-08-23</span>
+      <span class="foot-siblings">More from LunarWerx: <a href="https://repoyeti.com/" target="_blank" rel="noopener">RepoYeti</a> · <a href="https://redesign.lunarwerx.com/" target="_blank" rel="noopener">ReDesign</a> · <a href="https://sagethumbs.lunarwerx.com/" target="_blank" rel="noopener">SageThumbs</a> · <a href="https://quickdictate.lunarwerx.com/" target="_blank" rel="noopener">QuickDictate</a></span>
+      <span class="foot-updated">Last updated: 2026-10-08</span>
     </div>
   </footer>
 
@@ -1577,165 +971,6 @@ a.lw-parent:hover .lw-tip,a.lw-parent:focus-visible .lw-tip{opacity:1;visibility
       });
     })();
 
-    // Makes the product-shot replica lightly interactive: switch tabs, open the
-    // Settings / Queue panels, and click session rows to swap the transcript.
-    // Vanilla, self-contained, no dependencies.
-    (function () {
-      const app = document.querySelector('.app');
-      if (!app) return;
-      const $ = (s, r = app) => r.querySelector(s);
-      const $$ = (s, r = app) => Array.from(r.querySelectorAll(s));
-
-      // Canned transcripts for each session row. `src` drives the provider badge and,
-      // for Codex and OpenCode, drops the composer, because the app only renders one
-      // for Claude sessions.
-      const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const SESSIONS = {
-        acme: {
-          title: 'Add retry and backoff to the API client', id: '9e3779b1', src: 'claude',
-          cwd: 'C:\\work\\acme-checkout', turns: '6 turns shown', account: 'Alex Rivera',
-          chat: [
-            ['u', 'Our API client hammers the server and gives up on the first 429. Add retry with exponential backoff, and treat 429 vs 529 differently.'],
-            ['a', 'Good call. Those are two different failures. A 429 is your own rate cap and comes with a Retry-After header we should honour exactly. A 529 is the server being overloaded; that one we retry on our own schedule with backoff + jitter.'],
-            ['u', 'Cap it at 5 attempts and make the jitter full, not equal.'],
-            ['a', 'Done. Base delay 500ms, doubling each attempt, full jitter over [0, delay], hard cap of 5 tries. On a 429 I sleep for exactly Retry-After when present. Everything else fails fast.'],
-            ['u', 'Nice. Add a test that a 529 then a 200 resolves, and that a 400 never retries.'],
-            ['a', 'Added three: 529→200 resolves after one retry, a 429 waits for Retry-After, and a 400 throws with zero retries. All green.'],
-          ],
-        },
-        billing: {
-          title: 'Fix the flaky auth test on CI', id: '3c6ef363', src: 'codex',
-          cwd: 'C:\\work\\billing-service', turns: '4 turns shown', account: 'codex-personal',
-          chat: [
-            ['u', 'The auth test passes locally but fails about 1 in 5 on CI. Can you figure out why?'],
-            ['a', "It's a timing race: the test logs in and immediately asserts on the session cookie, but the cookie is set on the next tick. CI is busier, so the assert sometimes runs first. I'll wait for the redirect instead of a fixed sleep."],
-            ['u', 'We had a setTimeout(50) in there. Kill it.'],
-            ['a', 'Gone. Replaced the sleep with a wait-for-selector on the logged-in avatar, then ran it 50× in a loop locally. Green every time. Pushed.'],
-          ],
-        },
-        dashboard: {
-          title: 'Migrate the settings page to the design system', id: 'daa66d14', src: 'claude',
-          cwd: 'C:\\work\\dashboard', turns: '4 turns shown', account: 'Sam Chen',
-          chat: [
-            ['u', 'Move the settings page off the old hand-rolled inputs onto our design-system components.'],
-            ['a', 'Swapped the toggles, selects and text fields for the DS equivalents and dropped ~180 lines of bespoke CSS. Two things need a call: the old page had a custom color picker the DS does not ship, and the danger buttons used a red that is not a DS token.'],
-            ['u', 'Use the closest DS token for the red, and keep the color picker as a one-off for now.'],
-            ['a', 'Done. Danger buttons use `destructive`, and the color picker is isolated in its own component with a TODO so it is easy to find later. Screens match the mockups.'],
-          ],
-        },
-        payments: {
-          title: 'Wire up the Stripe webhook handlers', id: '78dde6c6', src: 'claude',
-          cwd: 'C:\\work\\payments', turns: '4 turns shown', account: 'Alex Rivera',
-          chat: [
-            ['u', 'Add handlers for checkout.session.completed and invoice.payment_failed, and verify the signature.'],
-            ['a', 'Both in, behind a signature check using the webhook secret. `completed` provisions the account; `payment_failed` flips it to past_due and queues a dunning email. Unknown event types get a 200 so Stripe stops retrying them.'],
-            ['u', "Make sure we're idempotent, since Stripe can deliver the same event twice."],
-            ['a', 'Added an events table keyed on the Stripe event id; a duplicate is a no-op that still returns 200. Verified with a replayed event.'],
-          ],
-        },
-        ingest: {
-          title: 'Track down the memory leak in the worker pool', id: '17156078', src: 'codex',
-          cwd: 'C:\\work\\ingest-worker', turns: '4 turns shown', account: 'codex-work',
-          chat: [
-            ['u', "The worker pool's memory climbs all day until it OOMs overnight. Find the leak."],
-            ['a', 'Heap snapshots point at the retry queue: each failed job is re-enqueued with a fresh closure that captures the whole payload, and a timer that never clears keeps the old closures alive. So every retry pins another copy of the payload.'],
-            ['u', 'Nasty. Fix it and add a guard so it cannot regress.'],
-            ['a', 'Cleared the timer on completion and stopped capturing the payload in the retry closure. Added a test that runs 10k retries and asserts the heap stays flat. Steady over a 6-hour soak now.'],
-          ],
-        },
-        data: {
-          title: 'Refactor the CSV importer for streaming', id: 'b54cda29', src: 'opencode',
-          cwd: 'C:\\work\\data-tools', turns: '4 turns shown',
-          chat: [
-            ['u', 'The CSV importer loads the whole file into memory. Make it stream so we can handle multi-GB files.'],
-            ['a', 'Rewrote it around a streaming parser: read the file as a stream, parse row by row, and batch inserts every 1,000 rows instead of building one giant array. Peak memory is flat regardless of file size.'],
-            ['u', 'What about a malformed row halfway through?'],
-            ['a', 'Each batch is its own transaction, and a bad row goes into an error report instead of aborting the import. You get a summary at the end: rows imported, rows skipped, and why.'],
-          ],
-        },
-        cli: {
-          title: 'Tidy up the CLI help output', id: 'e21b90fa', src: 'claude',
-          cwd: 'C:\\work\\pico-cli', turns: '4 turns shown', account: 'Alex Rivera',
-          chat: [
-            ['u', '`pico --help` dumps 60 flags in the order they were added. Group them and put the common ones first.'],
-            ['a', 'Grouped into Input, Output, Behaviour and Diagnostics, with the six flags people actually pass at the top. Long descriptions wrap at the terminal width instead of a hard 80.'],
-            ['u', 'Does it still work when the output is piped?'],
-            ['a', 'Yes. Width falls back to 80 when stdout is not a TTY, and colour is dropped in the same check, so `pico --help | less` is plain text.'],
-          ],
-        },
-      };
-
-      // --- tab switching ---
-      $$('.tab').forEach((t) => t.addEventListener('click', () => {
-        $$('.tab').forEach((x) => x.classList.toggle('on', x === t));
-        const name = t.dataset.tab;
-        $('#view-sessions').classList.toggle('on', name === 'sessions');
-        $('#view-instances').classList.toggle('on', name === 'instances');
-        closePanels();
-      }));
-
-      // --- slide-in panels (settings / queue), mutually exclusive ---
-      const scrim = $('.scrim');
-      function closePanels() {
-        $$('.panel').forEach((p) => p.classList.remove('on'));
-        scrim.classList.remove('on');
-        $$('[data-panel]').forEach((b) => b.classList.remove('active'));
-      }
-      function openPanel(id) {
-        closePanels();
-        const p = $('#panel-' + id);
-        if (!p) return;
-        p.classList.add('on');
-        scrim.classList.add('on');
-        $$('[data-panel="' + id + '"]').forEach((b) => b.classList.add('active'));
-      }
-      $$('[data-panel]').forEach((b) => b.addEventListener('click', () => {
-        const id = b.dataset.panel;
-        $('#panel-' + id).classList.contains('on') ? closePanels() : openPanel(id);
-      }));
-      scrim.addEventListener('click', closePanels);
-      $$('.panel .close').forEach((c) => c.addEventListener('click', closePanels));
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanels(); });
-
-      // --- click a session row to swap the transcript ---
-      const svgFolder = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V6a2 2 0 0 1 2-2h5l2 3h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>';
-      const svgTurns = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>';
-      const LABEL = { claude: 'Claude', codex: 'Codex', opencode: 'OpenCode' };
-
-      const detail = $('#view-sessions .detail');
-      const composer = detail.querySelector('.composer');
-      const chips = composer.querySelectorAll('.ctrls > .chip');
-      const chipAccount = chips[3];
-      const chipCwd = chips[4];
-
-      $$('#view-sessions .row').forEach((row) => row.addEventListener('click', () => {
-        $$('#view-sessions .row').forEach((x) => x.classList.toggle('sel', x === row));
-        const s = SESSIONS[row.dataset.session];
-        if (!s) return;
-        const src = s.src || 'claude';
-        detail.querySelector('.detail-head .h').textContent = s.title;
-        detail.querySelector('.detail-head .sub').innerHTML =
-          '<span class="m">' + s.id + '</span>' +
-          '<span class="pbadge ' + src + '">' + LABEL[src] + '</span>' +
-          '<span>' + svgFolder + esc(s.cwd) + '</span>' +
-          '<span>' + svgTurns + s.turns + '</span>';
-        detail.querySelector('.chat').innerHTML =
-          s.chat.map((m) => '<div class="msg ' + m[0] + '">' + esc(m[1]) + '</div>').join('');
-
-        // Only Claude sessions can be written back to, so the composer goes away
-        // for the other two rather than pretending to accept a message.
-        composer.hidden = src !== 'claude';
-        if (!composer.hidden) {
-          chipAccount.lastChild.textContent = s.account || 'Alex Rivera';
-          chipCwd.lastChild.textContent = s.cwd.split('\\').pop();
-        }
-      }));
-
-      // --- settings controls are live (toggles + theme segment) ---
-      $$('.switch').forEach((sw) => sw.addEventListener('click', () => sw.classList.toggle('on')));
-      $$('.seg').forEach((seg) => $$('span', seg).forEach((sp) =>
-        sp.addEventListener('click', () => $$('span', seg).forEach((x) => x.classList.toggle('on', x === sp)))));
-    })();
   </script>
 <!-- LunarWerx Discord badge. Self-contained: no external request, no build step,
      nothing borrowed from the host page's CSS. Everything is namespaced `lwdc-`.

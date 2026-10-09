@@ -2,8 +2,9 @@
 
     python scripts/optimize_images.py
 
-The masters in the site root stay as they are (the social card is what crawlers
-fetch, so it is never touched). The page loads only the copies written here, each at
+The masters stay as they are (the social card is what crawlers fetch, so it is never
+touched). The product screenshots' masters live in the app repo next to this one
+(../app), shot with demo data; re-shoot them under the same names and re-run this. The page loads only the copies written here, each at
 the size it is displayed (times three for high-density phones), as WebP, plus a small
 favicon. Deterministic: the same masters and the same Pillow give the same bytes.
 Needs Pillow with WebP support (pip install pillow).
@@ -23,7 +24,20 @@ SITE = Path(__file__).resolve().parent.parent
 JOBS: list[tuple[str, str, int | None, int | None]] = [
     # Legacy favicon for browsers that do not read icon.svg.
     ("favicon.ico", "favicon.ico", None, None),
+    # The hero: the whole window, shown up to 1080 CSS px wide, so twice that.
+    ("../app/.github/screenshots/window.png", "img/window.webp", 2160, None),
+    # The feature shots, shown up to about 640 CSS px wide.
+    ("../app/.github/screenshots/new.png", "img/new.webp", 1280, None),
+    ("../app/.github/screenshots/instances.png", "img/accounts.webp", 1280, None),
+    ("../app/.github/screenshots/analytics.png", "img/analytics.webp", 1280, None),
 ]
+
+# Optional crop (left, top, right, bottom, in master pixels) applied before resizing.
+# new.png is the full window; the page wants only the New screen's pane, from its
+# heading down to the composer, without the sidebar the hero already shows.
+CROPS: dict[str, tuple[int, int, int, int]] = {
+    "img/new.webp": (720, 400, 2416, 1600),
+}
 
 
 def fit(img: Image.Image, width: int | None, height: int | None) -> Image.Image:
@@ -88,8 +102,12 @@ def main() -> None:
             continue
         with Image.open(SITE / master) as src:
             alpha = "A" in src.getbands() or "transparency" in src.info
-            img = fit(src.convert("RGBA" if alpha else "RGB"), width, height)
+            img = src.convert("RGBA" if alpha else "RGB")
+            if output in CROPS:
+                img = img.crop(CROPS[output])
+            img = fit(img, width, height)
         data = webp_bytes(img) if output.endswith(".webp") else png_bytes(img)
+        (SITE / output).parent.mkdir(parents=True, exist_ok=True)
         (SITE / output).write_bytes(data)
         print(f"{output}: {img.width}x{img.height}, {len(data) / 1024:.1f} KB")
 
