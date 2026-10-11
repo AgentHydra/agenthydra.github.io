@@ -40,6 +40,10 @@ alongside Codex and OpenCode, with no single place that shows all of that histor
   app version, a coarse OS tag, and a random per-install id (never an IP, hostname, username,
   file path, account or email). `AGENTHYDRA_NO_PING=1` routes the check to GitHub's API instead,
   with no install id. The optional ChatGPT handoff is the other thing that leaves the machine.
+- HSwarm (formerly ZergSwarm) is the `hswarm` folder of the same repository: an MCP server, CLI
+  and local console that hands an agent's small, repetitive jobs to many cheap AI models at once
+  (`hswarm_run`, `hswarm_ask`, `hswarm_review`), each answer checked against a JSON schema. Not in
+  the download yet: `pip install -e hswarm` in a checkout (Python 3.11+), then `hswarm install`.
 - Built with Bun + Hono, Vue 3 + Vite, shadcn-vue, Tailwind v4, bun:sqlite, MCP stdio.
 
 ## Install
@@ -92,6 +96,8 @@ Q: Does it work offline? A: Yes for reading/messaging; dispatch needs whatever C
 Q: How does it differ from Crystal/Conductor/ccmanager? A: They launch new parallel sessions in
 worktrees; AgentHydra reads sessions already on the machine and adds a queue/scheduler/MCP layer.
 Q: Do I need Bun? A: Only to run from source; packaged builds need nothing else.
+Q: What happened to ZergSwarm? A: It became HSwarm, part of AgentHydra; zergswarm.lunarwerx.com
+redirects to the HSwarm section and the ZergSwarm repository is archived.
 
 ## Links
 
