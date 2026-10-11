@@ -19,6 +19,7 @@ reason lives nowhere else. Odin never overwrites this section._
 - The copy has a word budget and no em-dashes: `node scripts/copy-budget.mjs` (ceiling in `scripts/copy-budget.json`), also run by `.github/workflows/copy-budget.yml`. anchors: `scripts/copy-budget.json:1`
 - Codex and OpenCode sessions are read-only by design, not by omission: only Claude ships a CLI that accepts a piped prompt, so the FAQ encodes a real product limit, not a site bug to fix with a reply button. anchors: `index.html:571`
 - The site is one self-contained `index.html` with no build step and no dependencies: the whole deploy is edit the file and push to main. anchors: `README.md:1`
+- The `#hswarm` section came from the retired ZergSwarm site on 2026-10-11: the run video (`img/hswarm-run.mp4`, poster `img/hswarm-run.webp`) plays only while it is on screen and never under reduced motion, and the four-step flow keeps ZergSwarm's animated SVGs. zergswarm.lunarwerx.com 301-redirects to `/#hswarm`, so renaming or removing that anchor breaks the redirect. The "What happened to ZergSwarm?" FAQ is in both FAQ copies. anchors: `index.html:756`, `index.html:376`, `index.html:608`
 - `pricing.md` is a machine-readable pricing summary for agentic buyers. Nothing on the page links to it; its version row is kept by `sync-version.mjs`. anchors: `pricing.md:1`
 
 <!-- odin:about GENERATED BEGIN - rewritten by `odin codex about --publish`; edit the Codex, not this -->
